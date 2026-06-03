@@ -45,6 +45,7 @@ models/*.pt
 models/*.cbm
 artifacts/
 mlruns/
+catboost_info/
 reports/figures/*.png
 
 # ---- API cache & secrets ----

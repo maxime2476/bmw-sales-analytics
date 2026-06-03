@@ -15,11 +15,11 @@ Run as a script to (re)generate ``reports/data_integrity_report.md``::
 
     python -m bmw_sales.data.validation
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date
-from pathlib import Path
 from typing import Optional
 
 import numpy as np
@@ -95,14 +95,13 @@ def _mutual_information(df: pd.DataFrame) -> dict[str, float]:
     cats = list(SCHEMA.CATEGORICAL)
 
     x_parts = [df[features].to_numpy(dtype=float)]
-    codes = np.column_stack([df[c].cat.codes.to_numpy() for c in cats])
+    # Coerce to category first so this works whether or not dtypes were applied.
+    codes = np.column_stack([df[c].astype("category").cat.codes.to_numpy() for c in cats])
     x_parts.append(codes.astype(float))
     x = np.column_stack(x_parts)
     discrete_mask = [False] * len(features) + [True] * len(cats)
 
-    mi = mutual_info_regression(
-        x, target, discrete_features=discrete_mask, random_state=42
-    )
+    mi = mutual_info_regression(x, target, discrete_features=discrete_mask, random_state=42)
     return {name: float(v) for name, v in zip(features + cats, mi)}
 
 

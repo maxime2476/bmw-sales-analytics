@@ -78,12 +78,16 @@ class FXRateClient(BaseAPIClient):
         rng = np.random.default_rng(self._seed_from(self.name, region, start, end))
 
         years = np.arange(start, end + 1)
-        anchor = _USD_PER_UNIT_ANCHOR.get(currency, 0.5)
-        drift = _ANNUAL_DRIFT.get(currency, -0.01)
-        # Anchor is "recent"; walk backwards/forwards from the 2024 reference.
-        factor = (1 + drift) ** (years - 2024)
-        noise = 1 + rng.normal(0, 0.02, size=len(years))
-        usd_per_unit = anchor * factor * noise
+        if currency == "USD":
+            # The USD-denominated region is the numeraire: exactly 1.0, no noise.
+            usd_per_unit = np.ones(len(years))
+        else:
+            anchor = _USD_PER_UNIT_ANCHOR.get(currency, 0.5)
+            drift = _ANNUAL_DRIFT.get(currency, -0.01)
+            # Anchor is "recent"; walk backwards/forwards from the 2024 reference.
+            factor = (1 + drift) ** (years - 2024)
+            noise = 1 + rng.normal(0, 0.02, size=len(years))
+            usd_per_unit = anchor * factor * noise
 
         return pd.DataFrame(
             {

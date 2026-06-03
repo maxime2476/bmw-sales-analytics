@@ -4,6 +4,7 @@ The loader is the single supported entrypoint for reading the raw BMW dataset.
 It validates structure on the way in so that downstream code can assume a clean,
 well-typed frame and fail fast (with a clear message) otherwise.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -21,9 +22,17 @@ class SchemaValidationError(ValueError):
 #: Expected pandas dtypes after load. CSV ints can read as int64; we coerce
 #: categoricals to ``category`` for memory efficiency and correct modelling.
 _EXPECTED_COLUMNS: tuple[str, ...] = (
-    SCHEMA.MODEL, SCHEMA.YEAR, SCHEMA.REGION, SCHEMA.COLOR, SCHEMA.FUEL_TYPE,
-    SCHEMA.TRANSMISSION, SCHEMA.ENGINE_SIZE_L, SCHEMA.MILEAGE_KM,
-    SCHEMA.PRICE_USD, SCHEMA.SALES_VOLUME, SCHEMA.SALES_CLASSIFICATION,
+    SCHEMA.MODEL,
+    SCHEMA.YEAR,
+    SCHEMA.REGION,
+    SCHEMA.COLOR,
+    SCHEMA.FUEL_TYPE,
+    SCHEMA.TRANSMISSION,
+    SCHEMA.ENGINE_SIZE_L,
+    SCHEMA.MILEAGE_KM,
+    SCHEMA.PRICE_USD,
+    SCHEMA.SALES_VOLUME,
+    SCHEMA.SALES_CLASSIFICATION,
 )
 
 

@@ -57,6 +57,9 @@ reports/figures/*.png
 secrets.toml
 .streamlit/secrets.toml
 
+# ---- Tooling / local agent settings ----
+.claude/
+
 # ---- OS / IDE ----
 .DS_Store
 Thumbs.db

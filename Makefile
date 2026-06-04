@@ -6,7 +6,7 @@
 PY := python
 
 .PHONY: help install install-dev format lint typecheck test test-fast \
-        eda pipeline app docker-build docker-up clean
+        eda econ pipeline dl-report reports app docker-build docker-up clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -37,8 +37,16 @@ test-fast: ## Run tests, skip integration (no network)
 eda: ## Generate the Data Integrity Report
 	$(PY) -m bmw_sales.data.validation
 
-pipeline: ## Run the full training pipeline (econometrics + ML + DL)
+econ: ## Generate the econometric analysis report
+	$(PY) -m bmw_sales.econometrics.report
+
+pipeline: ## Train & benchmark all ML models (writes reports + artefacts)
 	$(PY) -m bmw_sales.models.train
+
+dl-report: ## Benchmark the tabular DL model vs gradient boosting
+	$(PY) -m bmw_sales.models.dl_report
+
+reports: eda econ pipeline dl-report ## Regenerate every analysis report
 
 app: ## Launch the Streamlit dashboard
 	streamlit run app/streamlit_app.py

@@ -32,6 +32,8 @@ nav:
       - ADR-0005 · DevOps & CI/CD: adr/0005-devops-and-cicd.md
       - ADR-0006 · Signal audit: adr/0006-signal-audit.md
       - ADR-0007 · SQL & quality gates: adr/0007-sql-and-quality-gates.md
+      - ADR-0008 · Decision under uncertainty: adr/0008-decision-under-uncertainty.md
+      - ADR-0009 · Observability & docs: adr/0009-observability-and-docs.md
   - API Reference: api.md
 
 plugins:

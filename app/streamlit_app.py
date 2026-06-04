@@ -442,6 +442,12 @@ def tab_sql() -> None:
         "YoY) executed by DuckDB with no ETL. Queries live in `sql/queries/`."
     )
     results = da.get_sql_insights()
+    if not results:
+        st.warning(
+            "No SQL queries found (`sql/queries/` not on the path). "
+            "Run locally with `make sql` or check the deployment image."
+        )
+        return
 
     left, right = st.columns(2)
     with left:

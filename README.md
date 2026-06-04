@@ -22,6 +22,7 @@
 
 [![Open in Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Open%20in%20Spaces-D4AF37?labelColor=1b1b1d)](https://maxime2476-bmw-sales-analytics.hf.space)
 [![Live Demo](https://img.shields.io/badge/●%20Live-online-3a7d44?labelColor=1b1b1d)](https://maxime2476-bmw-sales-analytics.hf.space)
+[![Docs](https://img.shields.io/badge/📖%20Docs-GitHub%20Pages-1b1b1d)](https://maxime2476.github.io/bmw-sales-analytics/)
 
 </div>
 
@@ -182,6 +183,10 @@ see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
   **Dependabot** updates (pip · actions · docker).
 - **SQL analytics:** decision queries in `sql/queries/` executed by **DuckDB**
   directly over the CSV (window functions, quantiles, YoY) — `make sql`.
+- **Experiment tracking:** every benchmarked model is logged to **MLflow**
+  (`mlflow ui --backend-store-uri ./mlruns`).
+- **Docs site:** **MkDocs Material** (ADRs + auto API reference) auto-deployed to
+  **[GitHub Pages](https://maxime2476.github.io/bmw-sales-analytics/)**.
 - **CI/CD:** GitHub Actions — lint + type + test matrix (3.11/3.12) with a
   coverage gate → cached Docker build + Trivy scan. See
   [ADR-0005](docs/adr/0005-devops-and-cicd.md), [ADR-0007](docs/adr/0007-sql-and-quality-gates.md).

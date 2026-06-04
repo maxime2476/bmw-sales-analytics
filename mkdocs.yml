@@ -1,0 +1,55 @@
+site_name: BMW Luxury Sales Analytics
+site_description: Production-grade analytics, econometrics & decision intelligence for the BMW luxury-car market.
+site_author: Maxime GOURGUECHON
+repo_url: https://github.com/maxime2476/bmw-sales-analytics
+repo_name: maxime2476/bmw-sales-analytics
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: black
+    accent: amber
+  font:
+    text: Lato
+    code: Roboto Mono
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.highlight
+  icon:
+    logo: material/car-sports
+
+nav:
+  - Home: index.md
+  - Architecture Decisions:
+      - ADR-0001 · Architecture & stack: adr/0001-architecture-and-stack.md
+      - ADR-0002 · Data integrity: adr/0002-data-integrity.md
+      - ADR-0003 · API augmentation: adr/0003-api-augmentation.md
+      - ADR-0004 · Deep-learning justification: adr/0004-deep-learning-justification.md
+      - ADR-0005 · DevOps & CI/CD: adr/0005-devops-and-cicd.md
+      - ADR-0006 · Signal audit: adr/0006-signal-audit.md
+      - ADR-0007 · SQL & quality gates: adr/0007-sql-and-quality-gates.md
+  - API Reference: api.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: numpy
+            show_source: true
+            show_root_heading: true
+            members_order: source
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - tables
+  - toc:
+      permalink: true

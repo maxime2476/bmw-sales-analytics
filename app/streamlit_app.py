@@ -40,6 +40,7 @@ from bmw_sales.simulation.scenario import (  # noqa: E402
     macro_defaults,
     simulate,
 )
+from bmw_sales.simulation.uncertainty import ElasticityPriors, simulate_mc  # noqa: E402
 
 st.set_page_config(
     page_title="BMW Luxury Sales Analytics",
@@ -372,14 +373,28 @@ def tab_simulator(df: pd.DataFrame) -> None:
         scenario,
         ElasticityAssumptions(own_price=own_price, income=income, regulation_per_10pts=reg_sens),
     )
+    # Propagate elasticity uncertainty via Monte Carlo for credible intervals.
+    dist = simulate_mc(
+        scenario,
+        ElasticityPriors(own_price_mean=own_price, income_mean=income, regulation_mean=reg_sens),
+    )
+    ci_lo, ci_hi = dist.pct_change_ci()
 
     k = st.columns(3)
     with k[0]:
         kpi("Baseline volume", f"{result.base_volume:,.0f}")
     with k[1]:
-        kpi("Projected volume", f"{result.projected_volume:,.0f}")
+        kpi(
+            "Projected volume",
+            f"{result.projected_volume:,.0f}",
+            f"80% CI [{dist.ci80[0]:,.0f} – {dist.ci80[1]:,.0f}]",
+        )
     with k[2]:
-        kpi("Net change", f"{result.total_change_pct:+.1f}%")
+        kpi(
+            "Net change",
+            f"{result.total_change_pct:+.1f}%",
+            f"80% CI [{ci_lo:+.0f}% , {ci_hi:+.0f}%]",
+        )
 
     # Waterfall of multiplicative contributions.
     drivers = [c.driver for c in result.contributions]
@@ -398,6 +413,26 @@ def tab_simulator(df: pd.DataFrame) -> None:
     )
     fig.update_layout(title="Demand drivers — % contribution to projected volume")
     st.plotly_chart(fig, use_container_width=True)
+
+    # Monte-Carlo predictive distribution with credible intervals.
+    st.markdown("#### Uncertainty — Monte-Carlo projected demand")
+    hist = px.histogram(
+        dist.samples, nbins=50, title="Projected demand distribution (elasticity priors)"
+    )
+    hist.update_traces(marker_color=GOLD_SOFT, showlegend=False)
+    for q, label, color in [
+        (dist.ci80[0], "P10", "#8FA9C7"),
+        (dist.median, "median", GOLD),
+        (dist.ci80[1], "P90", "#8FA9C7"),
+    ]:
+        hist.add_vline(x=q, line_color=color, line_width=2, annotation_text=label)
+    hist.update_layout(showlegend=False, xaxis_title="Projected annual volume")
+    st.plotly_chart(hist, use_container_width=True)
+    st.caption(
+        "Elasticities are uncertain, so the projection is a **distribution**, not a "
+        "point. The 80% credible interval is the decision-relevant range — what a "
+        "strategy team would actually plan against."
+    )
 
 
 # --------------------------------------------------------------------------- #

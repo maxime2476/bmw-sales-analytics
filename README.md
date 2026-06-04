@@ -81,6 +81,8 @@ codebase.
 | Regression R² (best of XGB/LGBM/CatBoost) | **≈ 0.00** | Boosting cannot beat the mean — no signal |
 | Classification ROC-AUC (leakage-free) | **≈ 0.51** | No discriminative signal once leakage removed |
 | Classification ROC-AUC (leak left in) | **1.00** | 🚩 The signature of target leakage |
+| **Permutation test** (label-shuffle) | **p ≈ 0.90** | Real score indistinguishable from chance |
+| **Positive control** (same pipeline, synthetic target) | **R² ≈ 0.86** | Pipeline is sound — the *data* is empty |
 | Tabular MLP vs gradient boosting | both no-skill | Deep learning **not justified** (ADR-0004) |
 
 Reports: [econometrics](reports/econometric_analysis.md) ·

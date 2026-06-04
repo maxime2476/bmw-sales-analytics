@@ -6,7 +6,7 @@
 PY := python
 
 .PHONY: help install install-dev format lint typecheck test test-fast \
-        eda econ pipeline dl-report reports app docker-build docker-up clean
+        eda audit econ pipeline dl-report reports app docker-build docker-up clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -36,6 +36,9 @@ test-fast: ## Run tests, skip integration (no network)
 
 eda: ## Generate the Data Integrity Report
 	$(PY) -m bmw_sales.data.validation
+
+audit: ## Run the statistical signal audit (permutation + positive control)
+	$(PY) -m bmw_sales.audit.report
 
 econ: ## Generate the econometric analysis report
 	$(PY) -m bmw_sales.econometrics.report

@@ -212,6 +212,33 @@ def tab_integrity() -> None:
             unsafe_allow_html=True,
         )
 
+    with st.expander("🔬 Statistical proof — positive control + permutation test"):
+        control, perm = da.get_signal_audit()
+        cc = st.columns(3)
+        with cc[0]:
+            kpi("Control R² (synthetic)", f"{control.r2_synthetic:+.3f}", "known signal")
+        with cc[1]:
+            kpi("Real R²", f"{control.r2_real:+.3f}", "same pipeline")
+        with cc[2]:
+            kpi("Permutation p-value", f"{perm.p_value:.3f}", "regression")
+        st.caption(
+            "The **same** pipeline recovers a known synthetic signal (high R²) yet "
+            "scores ~0 on the real target — so the null result is the data's, not the "
+            "model's. The permutation test confirms the real score is "
+            "indistinguishable from shuffled-label chance."
+        )
+        null = pd.Series(perm.null_scores, name="null R²")
+        fig = px.histogram(null, nbins=15, title="Permutation null distribution vs observed")
+        fig.update_traces(marker_color=GOLD_SOFT)
+        fig.add_vline(
+            x=perm.observed,
+            line_color="#d98c7a",
+            line_width=3,
+            annotation_text="observed",
+            annotation_position="top",
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
 
 def tab_econometrics() -> None:
     econ = _econometrics()

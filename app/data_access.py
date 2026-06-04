@@ -49,6 +49,18 @@ def get_integrity() -> DataIntegrityReport:
     return analyse(load_raw())
 
 
+@st.cache_data(show_spinner="Running statistical signal audit (permutation + control)…")
+def get_signal_audit():
+    """Positive-control R² and a regression permutation test (cached)."""
+    from bmw_sales.audit.control import run_control
+    from bmw_sales.audit.signal_tests import permutation_test
+
+    df = load_raw()
+    control = run_control(df, sample=10000)
+    perm = permutation_test(df, "regression", n_permutations=20, sample=5000)
+    return control, perm
+
+
 @st.cache_resource(show_spinner="Preparing model & SHAP explainer…")
 def get_regression_model(_sample: int = 12000) -> tuple[TrainedModel, Dataset]:
     """Load the persisted regression pipeline, or train a quick one on a sample."""

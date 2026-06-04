@@ -17,6 +17,7 @@ import pandas as pd
 
 from bmw_sales.audit.control import run_control
 from bmw_sales.audit.signal_tests import (
+    PermutationResult,
     chi2_independence,
     permutation_test,
     uniformity_tests,
@@ -48,7 +49,7 @@ def build_report(df: pd.DataFrame) -> str:
         for u in unif
     )
 
-    def perm_block(p) -> str:
+    def perm_block(p: PermutationResult) -> str:
         return (
             f"- **{p.task} ({p.metric})** — observed = **{p.observed:+.4f}**, "
             f"null = {p.null_mean:+.4f} ± {p.null_std:.4f} over {p.n_permutations} "

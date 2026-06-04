@@ -23,17 +23,23 @@ Docker identically.
 ```
 src/bmw_sales/
   config.py          # typed settings + canonical dataset schema
-  data/              # loading, validation, preprocessing
+  data/              # loading, validation, integrity report
+  audit/             # No-Signal Auditor: permutation, positive control (ADR-0006)
   apis/              # hybrid real+mock external clients
   features/          # feature engineering pipelines
   econometrics/      # OLS / hedonic / elasticity models
-  models/            # ML (XGB/LGBM/CatBoost) + DL (tabular NN)
-  simulation/        # labelled Scenario Simulator
+  models/            # ML (XGB/LGBM/CatBoost) + DL (tabular NN) + MLflow tracking
+  simulation/        # Scenario Simulator + Monte-Carlo uncertainty (ADR-0008)
   explainability/    # SHAP analysis
-app/                 # Streamlit premium UI
+  sql/               # DuckDB analytics over sql/queries/*.sql (ADR-0007)
+app/                 # Streamlit premium UI (7 tabs)
 tests/               # pytest (unit + integration)
-docs/adr/            # architecture decision records
+docs/                # MkDocs Material site + ADRs (ADR-0009)
 ```
+
+> This layout has grown with the project; the modules added later are recorded in
+> their own ADRs (signal audit · SQL · uncertainty · observability), cross-linked
+> above and listed in the [ADR index](https://github.com/maxime2476/bmw-sales-analytics#9-architecture-decision-records).
 
 ### Configuration — `pydantic-settings`
 A single typed `Settings` object reads from env / `.env`. No magic strings; the
@@ -49,8 +55,11 @@ type-checked.
 | Explainability | SHAP | Model-agnostic, board-ready feature attributions. |
 | External data | `requests` + `tenacity` | Hybrid real+mock with retry/circuit-breaker; offline-safe. |
 | UI | Streamlit + Plotly | Fast, interactive, fully themeable to the BMW luxury identity. |
+| SQL analytics | DuckDB-over-CSV | Portable, reviewable SQL with no ETL or server — ADR-0007. |
+| Experiment tracking | MLflow (file store) | Zero-infrastructure run history — ADR-0009. |
+| Docs | MkDocs Material + mkdocstrings | Docs-as-code: ADRs + auto API reference — ADR-0009. |
 | Packaging | Docker multi-stage | Small, reproducible runtime image. |
-| CI/CD | GitHub Actions | Lint (black/flake8) → test (pytest) → build. |
+| CI/CD | GitHub Actions | Lint · mypy · pytest (coverage gate) · pip-audit · Docker + Trivy — ADR-0005/0007. |
 
 ## Consequences
 

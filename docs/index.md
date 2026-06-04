@@ -25,9 +25,10 @@ issue — then delivers business value through a clearly labelled Scenario Simul
 
 ## How the docs are organised
 
-- **Architecture Decisions** — the seven ADRs that record every significant choice
+- **Architecture Decisions** — the nine ADRs that record every significant choice
   (architecture, the data-integrity finding, augmentation, DL justification,
-  DevOps, the signal audit, SQL & quality gates).
+  DevOps, the signal audit, SQL & quality gates, decision-under-uncertainty,
+  and observability & docs).
 - **API Reference** — auto-generated from the `bmw_sales` package docstrings.
 
 ## Quickstart

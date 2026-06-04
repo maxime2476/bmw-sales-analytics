@@ -40,12 +40,10 @@
 | Executive Overview | Data Integrity |
 |:---:|:---:|
 | ![Overview](docs/assets/screenshots/overview.png) | ![Data Integrity](docs/assets/screenshots/data_integrity.png) |
-| **Econometrics** | **Explainability (SHAP)** |
-| ![Econometrics](docs/assets/screenshots/econometrics.png) | ![SHAP](docs/assets/screenshots/explainability_shap.png) |
-
-**Scenario Simulator**
-
-![Scenario Simulator](docs/assets/screenshots/scenario_simulator.png)
+| **Econometrics** | **ML Benchmark** |
+| ![Econometrics](docs/assets/screenshots/econometrics.png) | ![ML Benchmark](docs/assets/screenshots/ml_benchmark.png) |
+| **Explainability (SHAP)** | **Scenario Simulator** |
+| ![SHAP](docs/assets/screenshots/explainability_shap.png) | ![Scenario Simulator](docs/assets/screenshots/scenario_simulator.png) |
 
 <em>Luxury dark + champagne-gold theme · interactive Plotly · SHAP explainability · what-if simulator</em>
 

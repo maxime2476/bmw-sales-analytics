@@ -25,6 +25,7 @@ from bmw_sales.config import MODELS_DIR, REPORTS_DIR
 from bmw_sales.data.loader import load_raw
 from bmw_sales.models.ml_models import TrainedModel, best_model, train_all
 from bmw_sales.models.preprocessing import make_dataset
+from bmw_sales.models.tracking import log_models
 
 
 def _metrics_table(models: list[TrainedModel]) -> str:
@@ -58,6 +59,12 @@ def run(*, tune: bool = True, n_iter: int = 6) -> str:
     # --- Leakage demonstration (include Sales_Volume) ---
     leak_ds = make_dataset(df, "classification", include_leakage=True)
     leak_models = train_all(leak_ds, tune=False)
+
+    # --- Experiment tracking (best-effort; no-op if MLflow absent) ---
+    if log_models(reg_models, run_group="regression"):
+        log_models(clf_models, run_group="classification")
+        log_models(leak_models, run_group="leakage-demo")
+        print("[OK] Logged runs to MLflow (./mlruns)")
 
     # --- Persist a machine-readable metrics summary ---
     summary = {

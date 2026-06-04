@@ -125,6 +125,9 @@ make app                         # launch the dashboard → http://localhost:850
 docker compose up --build        # → http://localhost:8501
 ```
 
+**Managed deployment** (Streamlit Community Cloud or Hugging Face Spaces):
+see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
+
 > On Windows + Anaconda, `KMP_DUPLICATE_LIB_OK=TRUE` is set in-code to avoid the
 > known OpenMP (`libiomp5md.dll`) clash when importing PyTorch.
 

@@ -45,7 +45,11 @@
 | **Explainability (SHAP)** | **Scenario Simulator** |
 | ![SHAP](docs/assets/screenshots/explainability_shap.png) | ![Scenario Simulator](docs/assets/screenshots/scenario_simulator.png) |
 
-<em>Luxury dark + champagne-gold theme · interactive Plotly · SHAP explainability · what-if simulator</em>
+**Decision under uncertainty** — Monte-Carlo propagation of elasticity priors yields a *distribution* with credible intervals, not a single point:
+
+![Uncertainty](docs/assets/screenshots/scenario_uncertainty.png)
+
+<em>Luxury dark + champagne-gold theme · interactive Plotly · SHAP explainability · Bayesian-flavoured what-if simulator</em>
 
 </div>
 

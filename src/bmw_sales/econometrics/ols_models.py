@@ -18,7 +18,7 @@ Models
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -49,7 +49,7 @@ class RegressionSummary:
         return self.r_squared >= 0.05 and self.f_pvalue < 0.05
 
 
-def _summarise(name: str, formula: str, result) -> RegressionSummary:
+def _summarise(name: str, formula: str, result: Any) -> RegressionSummary:
     """Convert a fitted statsmodels result into a :class:`RegressionSummary`."""
     conf = result.conf_int()
     coefs = pd.DataFrame(

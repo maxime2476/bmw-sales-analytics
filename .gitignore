@@ -48,6 +48,9 @@ mlruns/
 catboost_info/
 reports/figures/*.png
 
+# ---- MkDocs build output ----
+site/
+
 # ---- API cache & secrets ----
 .cache/
 *.env

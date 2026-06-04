@@ -41,16 +41,14 @@
 | Executive Overview | Data Integrity |
 |:---:|:---:|
 | ![Overview](docs/assets/screenshots/overview.png) | ![Data Integrity](docs/assets/screenshots/data_integrity.png) |
-| **Econometrics** | **ML Benchmark** |
-| ![Econometrics](docs/assets/screenshots/econometrics.png) | ![ML Benchmark](docs/assets/screenshots/ml_benchmark.png) |
-| **Explainability (SHAP)** | **Scenario Simulator** |
-| ![SHAP](docs/assets/screenshots/explainability_shap.png) | ![Scenario Simulator](docs/assets/screenshots/scenario_simulator.png) |
+| **SQL Insights (DuckDB)** | **Econometrics** |
+| ![SQL Insights](docs/assets/screenshots/sql_insights.png) | ![Econometrics](docs/assets/screenshots/econometrics.png) |
+| **ML Benchmark** | **Explainability (SHAP)** |
+| ![ML Benchmark](docs/assets/screenshots/ml_benchmark.png) | ![SHAP](docs/assets/screenshots/explainability_shap.png) |
+| **Scenario Simulator** | **Decision under uncertainty** |
+| ![Scenario Simulator](docs/assets/screenshots/scenario_simulator.png) | ![Uncertainty](docs/assets/screenshots/scenario_uncertainty.png) |
 
-**Decision under uncertainty** — Monte-Carlo propagation of elasticity priors yields a *distribution* with credible intervals, not a single point:
-
-![Uncertainty](docs/assets/screenshots/scenario_uncertainty.png)
-
-<em>Luxury dark + champagne-gold theme · interactive Plotly · SHAP explainability · Bayesian-flavoured what-if simulator</em>
+<em>Luxury dark + champagne-gold theme · DuckDB SQL · interactive Plotly · SHAP explainability · Bayesian-flavoured what-if simulator with credible intervals</em>
 
 </div>
 

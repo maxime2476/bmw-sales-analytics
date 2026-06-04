@@ -52,6 +52,8 @@ COPY --from=builder /opt/venv /opt/venv
 WORKDIR /app
 COPY src/ ./src/
 COPY app/ ./app/
+COPY sql/ ./sql/
+COPY .streamlit/ ./.streamlit/
 COPY data/raw/ ./data/raw/
 COPY reports/ ./reports/
 COPY pyproject.toml README.md ./

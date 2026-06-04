@@ -21,6 +21,7 @@ def _model() -> TrainedModel:
 
 
 def test_log_models_writes_runs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    pytest.importorskip("mlflow")  # MLflow is a dev-only dependency
     monkeypatch.setattr(tracking, "MLRUNS_DIR", tmp_path / "mlruns")
     logged = tracking.log_models([_model()], experiment="test-exp")
     assert logged is True

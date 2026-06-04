@@ -8,6 +8,11 @@ containerised, CI/CD-tested codebase.
 [:material-rocket-launch: **Open the live dashboard**](https://maxime2476-bmw-sales-analytics.hf.space){ .md-button .md-button--primary }
 [:material-github: **Source on GitHub**](https://github.com/maxime2476/bmw-sales-analytics){ .md-button }
 
+!!! info "Data source"
+    Base dataset: [BMW Sales Dataset on Kaggle](https://www.kaggle.com/datasets/eshummalik/bmw-sales-dataset)
+    by *eshummalik*. All macro/fuel/CO₂/FX context is added by this project's
+    augmentation layer.
+
 ## The defining principle — intellectual honesty
 
 The dataset is **structurally pristine but signal-free**, and

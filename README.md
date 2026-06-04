@@ -63,6 +63,11 @@ external APIs** (macro-economics, fuel prices, CO₂ regulation, FX), and ships 
 **premium Streamlit dashboard** behind a fully containerised, CI/CD-tested
 codebase.
 
+> **Data source:** the base dataset is the public
+> [BMW Sales Dataset on Kaggle](https://www.kaggle.com/datasets/eshummalik/bmw-sales-dataset)
+> by *eshummalik*. All external macro/fuel/CO₂/FX context is added by this
+> project (see [ADR-0003](docs/adr/0003-api-augmentation.md)).
+
 > ### 🧭 The defining principle: intellectual honesty
 > Exploratory analysis revealed that this dataset is **structurally pristine but
 > signal-free** (every feature is statistically independent of the targets) and

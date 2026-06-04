@@ -4,6 +4,7 @@ Single source of truth for paths, dataset schema and runtime knobs. Values are
 read from environment variables / ``.env`` via :class:`pydantic_settings`, so the
 same code runs identically in local dev, CI and Docker without edits.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -47,10 +48,18 @@ class DatasetSchema:
     SALES_CLASSIFICATION: Final[str] = "Sales_Classification"
 
     CATEGORICAL: Final[tuple[str, ...]] = (
-        MODEL, REGION, COLOR, FUEL_TYPE, TRANSMISSION,
+        MODEL,
+        REGION,
+        COLOR,
+        FUEL_TYPE,
+        TRANSMISSION,
     )
     NUMERIC: Final[tuple[str, ...]] = (
-        YEAR, ENGINE_SIZE_L, MILEAGE_KM, PRICE_USD, SALES_VOLUME,
+        YEAR,
+        ENGINE_SIZE_L,
+        MILEAGE_KM,
+        PRICE_USD,
+        SALES_VOLUME,
     )
     #: Regression target.
     TARGET_REGRESSION: Final[str] = SALES_VOLUME
@@ -63,9 +72,7 @@ class DatasetSchema:
 class Settings(BaseSettings):
     """Runtime configuration sourced from environment / ``.env``."""
 
-    model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="ignore"
-    )
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     # --- Network / API behaviour ---
     offline_mode: bool = Field(default=False, alias="BMW_OFFLINE_MODE")
@@ -76,9 +83,7 @@ class Settings(BaseSettings):
     worldbank_base_url: str = Field(
         default="https://api.worldbank.org/v2", alias="WORLDBANK_BASE_URL"
     )
-    fx_base_url: str = Field(
-        default="https://api.exchangerate.host", alias="FX_BASE_URL"
-    )
+    fx_base_url: str = Field(default="https://api.exchangerate.host", alias="FX_BASE_URL")
     fx_api_key: str = Field(default="", alias="FX_API_KEY")
 
     # --- Reproducibility ---

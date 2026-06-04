@@ -49,6 +49,14 @@ def get_integrity() -> DataIntegrityReport:
     return analyse(load_raw())
 
 
+@st.cache_data(show_spinner="Running SQL analytics (DuckDB)…")
+def get_sql_insights() -> dict:
+    """Run the DuckDB analytical queries over the raw dataset (cached)."""
+    from bmw_sales.sql.analytics import run_all
+
+    return run_all()
+
+
 @st.cache_data(show_spinner="Running statistical signal audit (permutation + control)…")
 def get_signal_audit():
     """Positive-control R² and a regression permutation test (cached)."""

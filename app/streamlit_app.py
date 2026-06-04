@@ -435,6 +435,41 @@ def tab_simulator(df: pd.DataFrame) -> None:
     )
 
 
+def tab_sql() -> None:
+    st.markdown("### SQL Insights — DuckDB over the raw CSV")
+    st.caption(
+        "Decision-oriented analytics in plain SQL (window functions, quantiles, "
+        "YoY) executed by DuckDB with no ETL. Queries live in `sql/queries/`."
+    )
+    results = da.get_sql_insights()
+
+    left, right = st.columns(2)
+    with left:
+        reg = results["top_regions_by_volume"]
+        st.markdown("**Sales volume by region**")
+        st.dataframe(reg, use_container_width=True, hide_index=True)
+    with right:
+        yoy = results["yoy_volume"]
+        fig = px.line(yoy, x="year", y="total_volume", markers=True, title="Year-over-year volume")
+        fig.update_traces(line_color=GOLD)
+        st.plotly_chart(fig, use_container_width=True)
+
+    elec = results["electrification_by_region"]
+    fig = px.bar(
+        elec.sort_values("electrified_pct"),
+        x="electrified_pct",
+        y="region",
+        orientation="h",
+        title="Electrified (Hybrid+Electric) share of volume by region (%)",
+    )
+    fig.update_traces(marker_color=GOLD_SOFT)
+    st.plotly_chart(fig, use_container_width=True)
+    st.caption(
+        "Flat shares (~16.7%/region, ~$75k/model) are the SQL view of the same "
+        "uniform-noise finding the statistical audit proves."
+    )
+
+
 # --------------------------------------------------------------------------- #
 # Main
 # --------------------------------------------------------------------------- #
@@ -452,6 +487,7 @@ def main() -> None:
         [
             "Executive Overview",
             "Data Integrity",
+            "SQL Insights",
             "Econometrics",
             "ML Benchmark",
             "Explainability (SHAP)",
@@ -463,12 +499,14 @@ def main() -> None:
     with tabs[1]:
         tab_integrity()
     with tabs[2]:
-        tab_econometrics()
+        tab_sql()
     with tabs[3]:
-        tab_models()
+        tab_econometrics()
     with tabs[4]:
-        tab_explainability()
+        tab_models()
     with tabs[5]:
+        tab_explainability()
+    with tabs[6]:
         tab_simulator(raw)
 
     st.markdown(

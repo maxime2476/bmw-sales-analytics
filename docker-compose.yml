@@ -1,0 +1,24 @@
+# =============================================================================
+# BMW Luxury Sales Analytics — local orchestration
+# Usage: docker compose up --build  ->  http://localhost:8501
+# =============================================================================
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bmw-sales-analytics:latest
+    container_name: bmw-sales-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      # Deterministic, offline external data by default. Set to "false" and
+      # provide keys (see .env.example) to enable live API calls.
+      BMW_OFFLINE_MODE: "true"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped

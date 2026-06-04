@@ -49,7 +49,7 @@
 | **Scenario Simulator** | **Decision under uncertainty** |
 | ![Scenario Simulator](docs/assets/screenshots/scenario_simulator.png) | ![Uncertainty](docs/assets/screenshots/scenario_uncertainty.png) |
 
-<em>Luxury dark + champagne-gold theme · DuckDB SQL · interactive Plotly · SHAP explainability · Bayesian-flavoured what-if simulator with credible intervals</em>
+<em>DuckDB SQL · interactive Plotly · SHAP explainability · Bayesian-flavoured what-if simulator with credible intervals</em>
 
 </div>
 
@@ -69,7 +69,7 @@ codebase.
 > by *eshummalik*. All external macro/fuel/CO₂/FX context is added by this
 > project (see [ADR-0003](docs/adr/0003-api-augmentation.md)).
 
-> ### 🧭 The defining principle: intellectual honesty
+> ### The defining principle: intellectual honesty
 > Exploratory analysis revealed that this dataset is **structurally pristine but
 > signal-free** (every feature is statistically independent of the targets) and
 > that `Sales_Classification` is a **leaked** deterministic threshold on
@@ -80,6 +80,8 @@ codebase.
 > Full evidence: [Data Integrity Report](reports/data_integrity_report.md) ·
 > [ADR-0002](docs/adr/0002-data-integrity.md).
 
+---
+
 ## 2. Headline results (honest, reproducible)
 
 | Analysis | Result | What it means |
@@ -89,7 +91,7 @@ codebase.
 | Hedonic price model R² | **0.0004** | Price is unexplained by attributes here |
 | Regression R² (best of XGB/LGBM/CatBoost) | **≈ 0.00** | Boosting cannot beat the mean — no signal |
 | Classification ROC-AUC (leakage-free) | **≈ 0.51** | No discriminative signal once leakage removed |
-| Classification ROC-AUC (leak left in) | **1.00** | 🚩 The signature of target leakage |
+| Classification ROC-AUC (leak left in) | **1.00** | The signature of target leakage |
 | **Permutation test** (label-shuffle) | **p ≈ 0.90** | Real score indistinguishable from chance |
 | **Positive control** (same pipeline, synthetic target) | **R² ≈ 0.86** | Pipeline is sound — the *data* is empty |
 | Tabular MLP vs gradient boosting | both no-skill | Deep learning **not justified** (ADR-0004) |
@@ -97,6 +99,8 @@ codebase.
 Reports: [econometrics](reports/econometric_analysis.md) ·
 [model benchmark](reports/model_benchmark.md) ·
 [DL vs ML](reports/dl_vs_ml.md).
+
+---
 
 ## 3. Architecture
 
@@ -134,7 +138,7 @@ data is audited and proven signal-free *before* any model is trusted.
 
 ```mermaid
 flowchart TB
-    RAW["📄 Raw dataset<br/>BMW_sales_data 2010–2024<br/>50,000 rows × 11 cols"]
+    RAW["Raw dataset<br/>BMW_sales_data 2010–2024<br/>50,000 rows × 11 cols"]
 
     subgraph L1["① Data foundation · bmw_sales.data"]
         LOAD["loader.py<br/>schema validation · dtype coercion"]
@@ -170,11 +174,11 @@ flowchart TB
         SQL["sql · DuckDB<br/>region · price · YoY · electrification"]
     end
 
-    REPORTS[("📑 reports/<br/>integrity · signal_audit · econometric<br/>model_benchmark · dl_vs_ml · sql_insights")]
-    MLF[("📊 MLflow<br/>./mlruns")]
-    ART[("💾 models/*.joblib")]
+    REPORTS[("reports/<br/>integrity · signal_audit · econometric<br/>model_benchmark · dl_vs_ml · sql_insights")]
+    MLF[("MLflow<br/>./mlruns")]
+    ART[("models/*.joblib")]
 
-    APP["🖥️ Streamlit app · 7 tabs<br/>Overview · Integrity · SQL · Econometrics<br/>ML · SHAP · Scenario Simulator"]
+    APP["Streamlit app · 7 tabs<br/>Overview · Integrity · SQL · Econometrics<br/>ML · SHAP · Scenario Simulator"]
 
     RAW --> LOAD --> VAL
     RAW --> L2
@@ -226,9 +230,11 @@ flowchart LR
     CI --> SEC["pip-audit"]
     Q --> DK["Docker build + Trivy scan"]
     PUSH --> DOCS["MkDocs build"]
-    DK -. image .-> HF["🤗 HF Spaces (Docker)<br/>live app"]
-    DOCS --> GP["📖 GitHub Pages<br/>docs site"]
+    DK -. image .-> HF["HF Spaces (Docker)<br/>live app"]
+    DOCS --> GP["GitHub Pages<br/>docs site"]
 ```
+
+---
 
 ## 4. External-data augmentation (hybrid: real + mock)
 
@@ -247,6 +253,8 @@ proves real connectivity (World Bank GDP/capita was validated live).
 
 Details: [ADR-0003](docs/adr/0003-api-augmentation.md).
 
+---
+
 ## 5. The Scenario Simulator (where business value lives)
 
 Because the data cannot forecast, decision value comes from an **explicit
@@ -256,6 +264,8 @@ cross-elasticity, CO₂-regulation shift) and **baselines seeded from the real
 macro APIs**. Every driver's contribution is decomposed in a waterfall chart, and
 all assumptions are adjustable in the UI. It is never presented as a fit to the
 historical data.
+
+---
 
 ## 6. Quickstart
 
@@ -288,6 +298,8 @@ see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 > On Windows + Anaconda, `KMP_DUPLICATE_LIB_OK=TRUE` is set in-code to avoid the
 > known OpenMP (`libiomp5md.dll`) clash when importing PyTorch.
 
+---
+
 ## 7. Quality & engineering
 
 - **Typed** (PEP 484) and **`mypy`-clean** across the `src/` package.
@@ -309,6 +321,8 @@ see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
   coverage gate → cached Docker build + Trivy scan. See
   [ADR-0005](docs/adr/0005-devops-and-cicd.md), [ADR-0007](docs/adr/0007-sql-and-quality-gates.md).
 
+---
+
 ## 8. Business insights for decision-makers
 
 1. **This dataset cannot price or forecast.** Any model claiming high accuracy on
@@ -318,6 +332,8 @@ see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
    fuel economics, CO₂ regulation) — exactly what the Simulator operationalises.
 3. **The electrification transition is the real story:** regulation stringency,
    not historical volume, should drive the Petrol→Electric portfolio mix.
+
+---
 
 ## 9. Architecture Decision Records
 
@@ -334,6 +350,8 @@ see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 | [0009](docs/adr/0009-observability-and-docs.md) | Experiment tracking & published docs site |
 
 Project evolution is summarised in the **[CHANGELOG](CHANGELOG.md)**.
+
+---
 
 ## 10. Author
 

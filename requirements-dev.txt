@@ -4,29 +4,29 @@
 -r requirements.txt
 
 # --- Quality / linting ---
-black>=24.3
-flake8>=7.0
-isort>=5.13
-mypy>=1.9
+black>=26.5.1
+flake8>=7.3.0
+isort>=8.0.1
+mypy>=2.1.0
 types-requests
 
 # --- Testing & security ---
-pytest>=8.1
-pytest-cov>=5.0
-pip-audit>=2.7
-pre-commit>=3.7
+pytest>=9.0.3
+pytest-cov>=7.1.0
+pip-audit>=2.10.0
+pre-commit>=4.6.0
 
 # --- Experiment tracking ---
-mlflow>=2.12
+mlflow>=3.13.0
 
 # --- Documentation site ---
-mkdocs-material>=9.5
-mkdocstrings[python]>=0.25
+mkdocs-material>=9.7.6
+mkdocstrings[python]>=1.0.4
 
 # --- Deep Learning (tabular) — heavier, dev/experiment only ---
-torch>=2.2
+torch>=2.12.0
 
 # --- Notebooks ---
-jupyterlab>=4.1
-matplotlib>=3.8
-seaborn>=0.13
+jupyterlab>=4.5.7
+matplotlib>=3.10.9
+seaborn>=0.13.2

@@ -1,0 +1,18 @@
+# Streamlit base configuration — luxury dark + champagne-gold identity.
+# Complements app/assets/style.css (which themes the custom HTML components).
+
+[theme]
+base = "dark"
+primaryColor = "#D4AF37"
+backgroundColor = "#121212"
+secondaryBackgroundColor = "#1b1b1d"
+textColor = "#EDEDED"
+font = "sans serif"
+
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false

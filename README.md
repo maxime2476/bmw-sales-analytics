@@ -99,23 +99,130 @@ bmw-sales/
 ├── src/bmw_sales/
 │   ├── config.py            # typed pydantic-settings + canonical DatasetSchema
 │   ├── data/                # loader (schema validation) · validation (integrity report)
+│   ├── audit/               # No-Signal Auditor: permutation · positive control · KS · χ²
 │   ├── apis/                # hybrid real+mock clients · enrichment join
 │   │   ├── base.py          #   cache + retry + circuit breaker + provenance
 │   │   ├── worldbank.py · fx_rates.py · fuel_prices.py · co2_regulations.py
 │   ├── features/            # domain feature engineering
 │   ├── econometrics/        # OLS hedonic · demand · elasticity · VIF · leakage proof
-│   ├── models/              # preprocessing · XGB/LGBM/CatBoost · tabular MLP · train
-│   ├── simulation/          # Scenario Simulator (elasticities + macro)
-│   └── explainability/      # SHAP attributions
-├── app/                     # Streamlit premium UI (theme · data_access · tabs)
-├── tests/                   # 34 pytest (unit + integration)
-├── docs/adr/                # 5 Architecture Decision Records
+│   ├── models/              # preprocessing · XGB/LGBM/CatBoost · tabular MLP · MLflow
+│   ├── simulation/          # Scenario Simulator + Monte-Carlo uncertainty
+│   ├── explainability/      # SHAP attributions
+│   └── sql/                 # DuckDB analytics over sql/queries/*.sql
+├── app/                     # Streamlit premium UI (theme · data_access · 7 tabs)
+├── sql/queries/             # versioned analytical SQL
+├── tests/                   # 54 pytest (unit + integration)
+├── docs/                    # MkDocs Material site + 7 ADRs
 ├── reports/                 # generated analyses (committed)
-├── Dockerfile · docker-compose.yml · .github/workflows/main.yml
-└── Makefile · pyproject.toml · requirements*.txt
+├── Dockerfile · docker-compose.yml · .github/workflows/{main,docs}.yml
+└── Makefile · mkdocs.yml · pyproject.toml · requirements*.txt
 ```
 
 Design rationale: [ADR-0001](docs/adr/0001-architecture-and-stack.md).
+
+## Pipeline (end-to-end)
+
+The full flow from raw data to a deployed decision-support app. The
+**honest-analytics spine** (gold) is what makes this a senior deliverable: the
+data is audited and proven signal-free *before* any model is trusted.
+
+```mermaid
+flowchart TB
+    RAW["📄 Raw dataset<br/>BMW_sales_data 2010–2024<br/>50,000 rows × 11 cols"]
+
+    subgraph L1["① Data foundation · bmw_sales.data"]
+        LOAD["loader.py<br/>schema validation · dtype coercion"]
+        VAL["validation.py<br/>correlation · ANOVA · mutual-info · leakage"]
+    end
+
+    subgraph L2["② Signal audit · bmw_sales.audit"]
+        PERM["permutation / label-shuffle test<br/>p ≈ 0.90 → no signal"]
+        CTRL["positive control<br/>synthetic R² ≈ 0.86 vs real ≈ 0"]
+        KS["KS-uniformity · χ² independence"]
+    end
+
+    subgraph L3["③ External augmentation · bmw_sales.apis"]
+        WB["WorldBank · FX<br/>real endpoints"]
+        FC["Fuel · CO₂<br/>mock-first"]
+        BASE["base.py<br/>cache → retry → circuit-breaker → mock"]
+        ENR["enrichment.py<br/>region × year × fuel panel join"]
+    end
+
+    subgraph L4["④ Features · bmw_sales.features"]
+        FE["engineering.py<br/>age · usage · electrified · log transforms"]
+    end
+
+    subgraph L5["⑤ Modelling"]
+        ECON["econometrics<br/>hedonic OLS · elasticity (HC3) · leakage proof"]
+        ML["ml_models<br/>XGBoost · LightGBM · CatBoost + RandomizedSearchCV"]
+        DL["dl_models<br/>PyTorch tabular MLP (early stopping)"]
+    end
+
+    subgraph L6["⑥ Decision intelligence"]
+        SIM["simulation<br/>elasticity scenario + Monte-Carlo CIs"]
+        SHAP["explainability<br/>SHAP attributions"]
+        SQL["sql · DuckDB<br/>region · price · YoY · electrification"]
+    end
+
+    REPORTS[("📑 reports/<br/>integrity · signal_audit · econometric<br/>model_benchmark · dl_vs_ml · sql_insights")]
+    MLF[("📊 MLflow<br/>./mlruns")]
+    ART[("💾 models/*.joblib")]
+
+    APP["🖥️ Streamlit app · 7 tabs<br/>Overview · Integrity · SQL · Econometrics<br/>ML · SHAP · Scenario Simulator"]
+
+    RAW --> LOAD --> VAL
+    RAW --> L2
+    RAW --> SQL
+    LOAD --> ENR
+    WB & FC --> BASE --> ENR
+    VAL --> FE
+    ENR --> FE
+    FE --> ECON & ML & DL
+    ML --> ART
+    ML --> SHAP
+    ENR -. macro baselines .-> SIM
+    L2 --> REPORTS
+    ECON & ML & DL & SQL --> REPORTS
+    ML --> MLF
+    REPORTS --> APP
+    SIM & SHAP & SQL --> APP
+
+    classDef honest fill:#241f08,stroke:#D4AF37,stroke-width:2px,color:#fff;
+    classDef store fill:#15151a,stroke:#8FA9C7,color:#cfe;
+    class RAW,L1,L2,FE honest;
+    class REPORTS,MLF,ART store;
+```
+
+### Hybrid-API resilience (offline-safe by design)
+
+Every external client degrades gracefully, so CI/Docker run with no network or
+keys yet the real path is proven live.
+
+```mermaid
+flowchart LR
+    REQ["client.fetch(region, years)"] --> C{"disk cache hit?"}
+    C -- yes --> HIT["return cached<br/>provenance = cache"]
+    C -- no --> OFF{"offline mode<br/>or breaker open?"}
+    OFF -- yes --> MOCK["deterministic mock<br/>provenance = mock"]
+    OFF -- no --> LIVE["HTTP GET + retry/backoff"]
+    LIVE -- success --> SAVE["cache + return<br/>provenance = live"]
+    LIVE -- failure --> TRIP["trip circuit-breaker"] --> MOCK
+```
+
+### Delivery — tests, CI/CD & deployment
+
+```mermaid
+flowchart LR
+    DEV["commit on feature/* branch"] --> PC["pre-commit<br/>black · isort · flake8 · mypy"]
+    PC --> PUSH["push → main"]
+    PUSH --> CI{"GitHub Actions"}
+    CI --> Q["quality (3.11 / 3.12)<br/>black · isort · flake8 · mypy<br/>pytest + 62% coverage gate"]
+    CI --> SEC["pip-audit"]
+    Q --> DK["Docker build + Trivy scan"]
+    PUSH --> DOCS["MkDocs build"]
+    DK -. image .-> HF["🤗 HF Spaces (Docker)<br/>live app"]
+    DOCS --> GP["📖 GitHub Pages<br/>docs site"]
+```
 
 ## 4. External-data augmentation (hybrid: real + mock)
 

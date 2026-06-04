@@ -117,7 +117,9 @@ def _detect_leakage(df: pd.DataFrame) -> tuple[bool, Optional[int]]:
     low = df.loc[df[cls] == "Low", vol]
     if high.empty or low.empty:
         return False, None
-    separated = high.min() > low.max()
+    # Cast to a native Python bool: pandas/numpy return a numpy.bool_ here, whose
+    # identity differs from ``True`` across versions (``is True`` would fail).
+    separated = bool(high.min() > low.max())
     threshold = int(high.min()) if separated else None
     return separated, threshold
 

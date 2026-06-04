@@ -27,7 +27,7 @@ def test_real_dataset_shape() -> None:
 @_skip
 def test_real_dataset_leakage_threshold_is_7000() -> None:
     report = analyse(load_raw())
-    assert report.leakage_detected is True
+    assert report.leakage_detected
     assert report.leakage_threshold == SCHEMA.CLASSIFICATION_THRESHOLD == 7000
 
 

@@ -5,7 +5,7 @@
 # =============================================================================
 
 # ---- Stage 1: builder -------------------------------------------------------
-FROM python:3.12-slim AS builder
+FROM python:3.14-slim AS builder
 
 ENV PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -29,7 +29,7 @@ RUN pip install --upgrade pip \
     && find /opt/venv -type f -name '*.pyc' -delete
 
 # ---- Stage 2: runtime -------------------------------------------------------
-FROM python:3.12-slim AS runtime
+FROM python:3.14-slim AS runtime
 
 # OCI metadata — links the GHCR package to the repository.
 LABEL org.opencontainers.image.source="https://github.com/maxime2476/bmw-sales-analytics" \

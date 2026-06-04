@@ -9,7 +9,7 @@ from bmw_sales.data.validation import analyse
 
 def test_detects_leakage(sample_df: pd.DataFrame) -> None:
     report = analyse(sample_df)
-    assert report.leakage_detected is True
+    assert report.leakage_detected
     assert report.leakage_threshold == 7000
 
 

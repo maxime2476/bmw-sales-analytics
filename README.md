@@ -31,11 +31,21 @@
 
 <div align="center">
 
+![Animated demo](docs/assets/demo.gif)
+
+<em>Live tour: executive overview → data integrity → econometrics → ML benchmark → scenario simulator.</em>
+
+<br/>
+
 | Executive Overview | Data Integrity |
 |:---:|:---:|
 | ![Overview](docs/assets/screenshots/overview.png) | ![Data Integrity](docs/assets/screenshots/data_integrity.png) |
-| **Econometrics** | **Scenario Simulator** |
-| ![Econometrics](docs/assets/screenshots/econometrics.png) | ![Scenario Simulator](docs/assets/screenshots/scenario_simulator.png) |
+| **Econometrics** | **Explainability (SHAP)** |
+| ![Econometrics](docs/assets/screenshots/econometrics.png) | ![SHAP](docs/assets/screenshots/explainability_shap.png) |
+
+**Scenario Simulator**
+
+![Scenario Simulator](docs/assets/screenshots/scenario_simulator.png)
 
 <em>Luxury dark + champagne-gold theme · interactive Plotly · SHAP explainability · what-if simulator</em>
 

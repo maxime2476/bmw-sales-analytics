@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bmw-sales-analytics"
+version = "0.1.0"
+description = "Production-grade analytics & forecasting platform for the BMW luxury-car market."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Maxime GOURGUECHON", email = "maxime.gourguechon76@gmail.com" }]
+license = { text = "MIT" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ---------------------------------------------------------------------------
+# Tooling configuration (single source of truth)
+# ---------------------------------------------------------------------------
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = ["bmw_sales"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "integration: end-to-end tests that may hit external services (deselect with -m 'not integration')",
+]
+
+[tool.coverage.run]
+source = ["bmw_sales"]
+branch = true

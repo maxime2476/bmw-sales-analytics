@@ -1,0 +1,23 @@
+# ============================================================================
+# Development & CI dependencies (linting, testing, DL experiments)
+# ============================================================================
+-r requirements.txt
+
+# --- Quality / linting ---
+black>=24.3
+flake8>=7.0
+isort>=5.13
+mypy>=1.9
+types-requests
+
+# --- Testing ---
+pytest>=8.1
+pytest-cov>=5.0
+
+# --- Deep Learning (tabular) — heavier, dev/experiment only ---
+torch>=2.2
+
+# --- Notebooks ---
+jupyterlab>=4.1
+matplotlib>=3.8
+seaborn>=0.13

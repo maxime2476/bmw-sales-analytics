@@ -171,13 +171,20 @@ see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 
 ## 7. Quality & engineering
 
-- **Typed** (PEP 484), modular `src/` package, docstrings throughout.
-- **Formatted & linted:** `black`, `isort`, `flake8` — all clean.
-- **Tested:** 34 `pytest` cases (schema, leakage, mock determinism &
-  circuit-breaker fallback, leakage-aware splits, elasticity model); real-data
-  checks marked `integration`.
-- **CI/CD:** GitHub Actions — lint + test matrix (3.11/3.12) → cached Docker
-  build. See [ADR-0005](docs/adr/0005-devops-and-cicd.md).
+- **Typed** (PEP 484) and **`mypy`-clean** across the `src/` package.
+- **Formatted & linted:** `black`, `isort`, `flake8` — all clean; `pre-commit`
+  hooks run the same gates locally.
+- **Tested:** 50+ `pytest` cases at **~67% coverage** (schema, leakage, mock
+  determinism & circuit-breaker fallback, leakage-aware splits, signal audit,
+  Monte-Carlo simulator, SQL layer, report builders); real-data checks marked
+  `integration`.
+- **Security:** `pip-audit` dependency scan, **Trivy** image scan, and
+  **Dependabot** updates (pip · actions · docker).
+- **SQL analytics:** decision queries in `sql/queries/` executed by **DuckDB**
+  directly over the CSV (window functions, quantiles, YoY) — `make sql`.
+- **CI/CD:** GitHub Actions — lint + type + test matrix (3.11/3.12) with a
+  coverage gate → cached Docker build + Trivy scan. See
+  [ADR-0005](docs/adr/0005-devops-and-cicd.md), [ADR-0007](docs/adr/0007-sql-and-quality-gates.md).
 
 ## 8. Business insights for decision-makers
 

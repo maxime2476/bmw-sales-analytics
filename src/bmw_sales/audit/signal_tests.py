@@ -28,7 +28,12 @@ from sklearn.ensemble import (
 from sklearn.metrics import r2_score, roc_auc_score
 
 from bmw_sales.config import SCHEMA, get_settings
-from bmw_sales.models.preprocessing import Dataset, build_preprocessor, make_dataset
+from bmw_sales.models.preprocessing import (
+    Dataset,
+    Task,
+    build_preprocessor,
+    make_dataset,
+)
 
 
 @dataclass
@@ -66,7 +71,7 @@ def _fit_score(dataset: Dataset, y_train: np.ndarray) -> float:
 
 
 def permutation_test(
-    df: pd.DataFrame, task: str, *, n_permutations: int = 30, sample: int = 6000
+    df: pd.DataFrame, task: Task, *, n_permutations: int = 30, sample: int = 6000
 ) -> PermutationResult:
     """Run a label-permutation test for exploitable signal on ``task``.
 

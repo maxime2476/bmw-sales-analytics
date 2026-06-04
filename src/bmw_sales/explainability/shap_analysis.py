@@ -12,6 +12,7 @@ systematically drives predictions.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -37,7 +38,7 @@ class ShapResult:
         )
 
 
-def _transformed_feature_names(preprocessor) -> list[str]:
+def _transformed_feature_names(preprocessor: Any) -> list[str]:
     """Best-effort readable names for the ColumnTransformer output."""
     try:
         return list(preprocessor.get_feature_names_out())

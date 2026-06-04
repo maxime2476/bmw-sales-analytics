@@ -75,16 +75,21 @@ jobs:
         run: pip-audit -r requirements.txt --strict || true   # report, do not block
 
   docker:
-    name: Build & scan Docker image
+    name: Build, scan & publish image
     runs-on: ubuntu-latest
     needs: quality
+    permissions:
+      contents: read
+      packages: write          # required to push to GHCR
+    env:
+      IMAGE: ghcr.io/${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build image (load locally)
+      - name: Build image (load locally for scanning)
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -102,3 +107,20 @@ jobs:
           ignore-unfixed: true
           severity: CRITICAL,HIGH
           exit-code: "0"        # report findings without failing the build
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag & push to GHCR
+        if: github.event_name == 'push'
+        run: |
+          docker tag bmw-sales-analytics:ci "$IMAGE:latest"
+          docker tag bmw-sales-analytics:ci "$IMAGE:${GITHUB_SHA::7}"
+          docker push "$IMAGE:latest"
+          docker push "$IMAGE:${GITHUB_SHA::7}"
+          echo "Pushed $IMAGE:latest and $IMAGE:${GITHUB_SHA::7}"

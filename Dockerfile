@@ -31,6 +31,12 @@ RUN pip install --upgrade pip \
 # ---- Stage 2: runtime -------------------------------------------------------
 FROM python:3.12-slim AS runtime
 
+# OCI metadata — links the GHCR package to the repository.
+LABEL org.opencontainers.image.source="https://github.com/maxime2476/bmw-sales-analytics" \
+      org.opencontainers.image.description="BMW Luxury Sales Analytics — Streamlit dashboard" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.authors="Maxime GOURGUECHON"
+
 # libgomp1 is required at runtime by xgboost/lightgbm.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libgomp1 curl \

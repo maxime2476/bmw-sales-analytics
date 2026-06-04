@@ -14,6 +14,7 @@
 ![Tests](https://img.shields.io/badge/tests-34%20passing-3a7d44)
 ![Lint](https://img.shields.io/badge/black%20·%20isort%20·%20flake8-clean-D4AF37)
 ![Docker](https://img.shields.io/badge/Docker-multi--stage-1b1b1d?logo=docker&logoColor=2496ED)
+![GHCR](https://img.shields.io/badge/GHCR-ghcr.io%2Fmaxime2476%2Fbmw--sales--analytics-1b1b1d?logo=github)
 ![License](https://img.shields.io/badge/license-MIT-D4AF37)
 
 <br/>
@@ -272,6 +273,13 @@ make app                         # launch the dashboard → http://localhost:850
 
 ```bash
 docker compose up --build        # → http://localhost:8501
+```
+
+Or pull the **published image** from the GitHub Container Registry (built, scanned
+and pushed by CI on every `main` update):
+
+```bash
+docker run -p 8501:8501 ghcr.io/maxime2476/bmw-sales-analytics:latest
 ```
 
 **Managed deployment** (Streamlit Community Cloud or Hugging Face Spaces):

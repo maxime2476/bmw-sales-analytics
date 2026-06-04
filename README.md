@@ -10,10 +10,34 @@
 <br/>
 
 ![Python](https://img.shields.io/badge/Python-3.11%20|%203.12%20|%203.13-1b1b1d?logo=python&logoColor=D4AF37)
+![CI](https://github.com/maxime2476/bmw-sales-analytics/actions/workflows/main.yml/badge.svg)
 ![Tests](https://img.shields.io/badge/tests-34%20passing-3a7d44)
 ![Lint](https://img.shields.io/badge/black%20·%20isort%20·%20flake8-clean-D4AF37)
 ![Docker](https://img.shields.io/badge/Docker-multi--stage-1b1b1d?logo=docker&logoColor=2496ED)
 ![License](https://img.shields.io/badge/license-MIT-D4AF37)
+
+<br/>
+
+### ▶ [**Open the live dashboard**](https://maxime2476-bmw-sales-analytics.hf.space)
+
+[![Open in Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Open%20in%20Spaces-D4AF37?labelColor=1b1b1d)](https://maxime2476-bmw-sales-analytics.hf.space)
+[![Live Demo](https://img.shields.io/badge/●%20Live-online-3a7d44?labelColor=1b1b1d)](https://maxime2476-bmw-sales-analytics.hf.space)
+
+</div>
+
+---
+
+## Dashboard preview
+
+<div align="center">
+
+| Executive Overview | Data Integrity |
+|:---:|:---:|
+| ![Overview](docs/assets/screenshots/overview.png) | ![Data Integrity](docs/assets/screenshots/data_integrity.png) |
+| **Econometrics** | **Scenario Simulator** |
+| ![Econometrics](docs/assets/screenshots/econometrics.png) | ![Scenario Simulator](docs/assets/screenshots/scenario_simulator.png) |
+
+<em>Luxury dark + champagne-gold theme · interactive Plotly · SHAP explainability · what-if simulator</em>
 
 </div>
 

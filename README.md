@@ -315,6 +315,12 @@ see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 | [0003](docs/adr/0003-api-augmentation.md) | Hybrid external-data augmentation |
 | [0004](docs/adr/0004-deep-learning-justification.md) | DL tested, not assumed |
 | [0005](docs/adr/0005-devops-and-cicd.md) | Containerisation & CI/CD |
+| [0006](docs/adr/0006-signal-audit.md) | Statistical signal audit & positive control |
+| [0007](docs/adr/0007-sql-and-quality-gates.md) | SQL analytics & hardened quality gates |
+| [0008](docs/adr/0008-decision-under-uncertainty.md) | Decision-making under uncertainty (Monte-Carlo) |
+| [0009](docs/adr/0009-observability-and-docs.md) | Experiment tracking & published docs site |
+
+Project evolution is summarised in the **[CHANGELOG](CHANGELOG.md)**.
 
 ## 10. Author
 

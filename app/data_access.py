@@ -63,14 +63,26 @@ def get_signal_audit():
 
 @st.cache_resource(show_spinner="Preparing model & SHAP explainer…")
 def get_regression_model(_sample: int = 12000) -> tuple[TrainedModel, Dataset]:
-    """Load the persisted regression pipeline, or train a quick one on a sample."""
-    df = load_raw()
+    """Return a regression pipeline + matching data for SHAP.
+
+    The data is **enriched** so the feature space matches the persisted
+    ``regression_best.joblib`` (also trained on enriched data); we only reuse
+    that artefact when its feature names align, otherwise we keep the freshly
+    trained pipeline. This guarantees the explainer always sees a consistent
+    feature space.
+    """
+    df, _ = get_enriched()
     ds = make_dataset(df.sample(_sample, random_state=42), "regression")
-    artefact: Optional[Path] = MODELS_DIR / "regression_best.joblib"
     model = train_one("XGBoost", ds, tune=False)
+
+    artefact: Optional[Path] = MODELS_DIR / "regression_best.joblib"
     if artefact.exists():
         try:
-            model.pipeline = joblib.load(artefact)
+            loaded = joblib.load(artefact)
+            expected = set(ds.numeric) | set(ds.categorical)
+            cols = set(loaded.named_steps["pre"].feature_names_in_)
+            if cols == expected:  # only swap in when the schema matches
+                model.pipeline = loaded
         except Exception:  # noqa: BLE001 — fall back to the freshly trained pipeline
             pass
     return model, ds

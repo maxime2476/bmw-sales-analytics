@@ -6,7 +6,7 @@
 PY := python
 
 .PHONY: help install install-dev format lint typecheck test test-fast \
-        eda audit econ pipeline dl-report reports app docker-build docker-up clean
+        eda audit sql econ pipeline dl-report reports app docker-build docker-up clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -40,6 +40,9 @@ eda: ## Generate the Data Integrity Report
 audit: ## Run the statistical signal audit (permutation + positive control)
 	$(PY) -m bmw_sales.audit.report
 
+sql: ## Run the DuckDB SQL business-insights report
+	$(PY) -m bmw_sales.sql.report
+
 econ: ## Generate the econometric analysis report
 	$(PY) -m bmw_sales.econometrics.report
 
@@ -49,7 +52,7 @@ pipeline: ## Train & benchmark all ML models (writes reports + artefacts)
 dl-report: ## Benchmark the tabular DL model vs gradient boosting
 	$(PY) -m bmw_sales.models.dl_report
 
-reports: eda econ pipeline dl-report ## Regenerate every analysis report
+reports: eda audit sql econ pipeline dl-report ## Regenerate every analysis report
 
 app: ## Launch the Streamlit dashboard
 	streamlit run app/streamlit_app.py

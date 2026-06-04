@@ -18,8 +18,15 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Install runtime dependencies only (no dev/DL toolchain) for a slim image.
+# Post-install: drop XGBoost's optional CUDA/NCCL libs (~400 MB; we run CPU-only)
+# and strip bundled bytecode caches & test suites to keep the layer lean.
 COPY requirements.txt ./
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt \
+    && pip uninstall -y nvidia-nccl-cu12 || true \
+    && find /opt/venv -depth -type d -name '__pycache__' -exec rm -rf {} + \
+    && find /opt/venv -depth -type d -name 'tests' -exec rm -rf {} + \
+    && find /opt/venv -type f -name '*.pyc' -delete
 
 # ---- Stage 2: runtime -------------------------------------------------------
 FROM python:3.12-slim AS runtime

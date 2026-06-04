@@ -4,35 +4,35 @@
 # ============================================================================
 
 # --- Data stack ---
-pandas>=2.2,<3.0
-numpy>=1.26,<3.0
-pyarrow>=15.0            # columnar IO for processed parquet
-duckdb>=1.0             # in-process SQL analytics over the raw CSV
+pandas>=3.0.3,<4.0
+numpy>=2.4.6,<3.0
+pyarrow>=24.0.0            # columnar IO for processed parquet
+duckdb>=1.5.3             # in-process SQL analytics over the raw CSV
 
 # --- Econometrics / stats ---
-statsmodels>=0.14,<1.0
-scipy>=1.11
+statsmodels>=0.14.6,<1.0
+scipy>=1.17.1
 
 # --- Machine Learning ---
-scikit-learn>=1.4,<2.0
-xgboost>=2.0
-lightgbm>=4.3
-catboost>=1.2
+scikit-learn>=1.9.0,<2.0
+xgboost>=3.2.0
+lightgbm>=4.6.0
+catboost>=1.2.10
 
 # --- Explainability ---
-shap>=0.45
+shap>=0.51.0
 
 # --- External APIs (hybrid real + mock fallback) ---
-requests>=2.31
-tenacity>=8.2           # retry / circuit-breaker primitives
+requests>=2.34.2
+tenacity>=9.1.4           # retry / circuit-breaker primitives
 
 # --- UI ---
-streamlit>=1.36
-plotly>=5.22
+streamlit>=1.58.0
+plotly>=6.8.0
 
 # --- Config / utils ---
-tabulate>=0.9            # pandas .to_markdown() backend (report generators)
-pydantic>=2.6
-pydantic-settings>=2.2
-python-dotenv>=1.0
-joblib>=1.4
+tabulate>=0.10.0            # pandas .to_markdown() backend (report generators)
+pydantic>=2.13.4
+pydantic-settings>=2.14.1
+python-dotenv>=1.2.2
+joblib>=1.5.3

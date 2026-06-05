@@ -69,16 +69,25 @@ codebase.
 > by *eshummalik*. All external macro/fuel/CO₂/FX context is added by this
 > project (see [ADR-0003](docs/adr/0003-api-augmentation.md)).
 
-> ### The defining principle: intellectual honesty
-> Exploratory analysis revealed that this dataset is **structurally pristine but
-> signal-free** (every feature is statistically independent of the targets) and
-> that `Sales_Classification` is a **leaked** deterministic threshold on
-> `Sales_Volume`. Rather than inflate metrics, this project **detects, proves and
-> communicates** the issue — then delivers real business value through a clearly
-> labelled **Scenario Simulator**. *That* is the senior deliverable.
+> ### This project proves two things
 >
-> Full evidence: [Data Integrity Report](reports/data_integrity_report.md) ·
-> [ADR-0002](docs/adr/0002-data-integrity.md).
+> **1 — I can build a model that works.** The pipeline reaches a **cross-validated
+> R² ≈ 0.85** on signal-bearing data, with SHAP recovering the true drivers — a
+> *validated* model, not a lucky split.
+> ([predictive capability](reports/predictive_capability.md))
+>
+> **2 — I won't fake it when the data is empty.** This particular dataset is
+> **structurally pristine but signal-free** (every feature is statistically
+> independent of the targets), and `Sales_Classification` is a **leaked**
+> threshold on `Sales_Volume`. On it the *same* pipeline honestly scores **R² ≈ 0
+> / AUC ≈ 0.5** — proven with a permutation test and a positive control, not
+> hidden. Business value is then delivered through a clearly-labelled **Scenario
+> Simulator**.
+>
+> *Predictive competence **and** intellectual honesty — that is the senior
+> deliverable.* Evidence: [Predictive Capability](reports/predictive_capability.md) ·
+> [Data Integrity](reports/data_integrity_report.md) ·
+> [Signal Audit](reports/signal_audit.md) · [ADR-0002](docs/adr/0002-data-integrity.md).
 
 ---
 
@@ -93,7 +102,7 @@ codebase.
 | Classification ROC-AUC (leakage-free) | **≈ 0.51** | No discriminative signal once leakage removed |
 | Classification ROC-AUC (leak left in) | **1.00** | The signature of target leakage |
 | **Permutation test** (label-shuffle) | **p ≈ 0.90** | Real score indistinguishable from chance |
-| **Positive control** (same pipeline, synthetic target) | **R² ≈ 0.86** | Pipeline is sound — the *data* is empty |
+| **Predictive capability** (same pipeline, signal-bearing target) | **CV R² ≈ 0.85 ± 0.003** | The pipeline *does* predict — when there is signal |
 | Tabular MLP vs gradient boosting | both no-skill | Deep learning **not justified** (ADR-0004) |
 
 Reports: [econometrics](reports/econometric_analysis.md) ·

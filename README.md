@@ -11,8 +11,8 @@
 
 ![Python](https://img.shields.io/badge/Python-3.11%20|%203.12%20|%203.13-1b1b1d?logo=python&logoColor=D4AF37)
 ![CI](https://github.com/maxime2476/bmw-sales-analytics/actions/workflows/main.yml/badge.svg)
-![Tests](https://img.shields.io/badge/tests-34%20passing-3a7d44)
-![Lint](https://img.shields.io/badge/black%20·%20isort%20·%20flake8-clean-D4AF37)
+[![codecov](https://codecov.io/gh/maxime2476/bmw-sales-analytics/branch/main/graph/badge.svg)](https://codecov.io/gh/maxime2476/bmw-sales-analytics)
+![Lint](https://img.shields.io/badge/black%20·%20isort%20·%20flake8%20·%20mypy-clean-D4AF37)
 ![Docker](https://img.shields.io/badge/Docker-multi--stage-1b1b1d?logo=docker&logoColor=2496ED)
 ![GHCR](https://img.shields.io/badge/GHCR-ghcr.io%2Fmaxime2476%2Fbmw--sales--analytics-1b1b1d?logo=github)
 ![License](https://img.shields.io/badge/license-MIT-D4AF37)
@@ -130,8 +130,8 @@ bmw-sales/
 │   └── sql/                 # DuckDB analytics over sql/queries/*.sql
 ├── app/                     # Streamlit premium UI (theme · data_access · 7 tabs)
 ├── sql/queries/             # versioned analytical SQL
-├── tests/                   # 54 pytest (unit + integration)
-├── docs/                    # MkDocs Material site + 7 ADRs
+├── tests/                   # pytest suite (unit + integration)
+├── docs/                    # MkDocs Material site + 9 ADRs
 ├── reports/                 # generated analyses (committed)
 ├── Dockerfile · docker-compose.yml · .github/workflows/{main,docs}.yml
 └── Makefile · mkdocs.yml · pyproject.toml · requirements*.txt
@@ -288,7 +288,7 @@ make install-dev                 # or: pip install -r requirements-dev.txt
 
 make eda                         # regenerate the Data Integrity Report
 make pipeline                    # train & benchmark all models (writes reports/)
-make test                        # 34 tests, offline & deterministic
+make test                        # full suite, offline & deterministic
 make app                         # launch the dashboard → http://localhost:8501
 ```
 
@@ -318,10 +318,12 @@ see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 - **Typed** (PEP 484) and **`mypy`-clean** across the `src/` package.
 - **Formatted & linted:** `black`, `isort`, `flake8` — all clean; `pre-commit`
   hooks run the same gates locally.
-- **Tested:** 50+ `pytest` cases at **~67% coverage** (schema, leakage, mock
-  determinism & circuit-breaker fallback, leakage-aware splits, signal audit,
-  Monte-Carlo simulator, SQL layer, report builders); real-data checks marked
-  `integration`.
+- **Tested:** a `pytest` suite behind a **coverage gate of ≥ 62%** (live status in
+  the CI and Codecov badges above) — schema, leakage, mock determinism &
+  circuit-breaker fallback, leakage-aware splits, signal audit, predictive
+  capability, Monte-Carlo simulator, SQL layer, report builders; real-data checks
+  marked `integration`. A guard test keeps this gate in sync between the README
+  and CI.
 - **Security:** `pip-audit` dependency scan, **Trivy** image scan, and
   **Dependabot** updates (pip · actions · docker).
 - **SQL analytics:** decision queries in `sql/queries/` executed by **DuckDB**

@@ -64,3 +64,24 @@ def test_custom_assumptions_respected() -> None:
     )
     # With zero price elasticity, a price change must not move demand.
     assert res.projected_volume == 5000
+
+
+def test_premium_segment_is_less_price_elastic() -> None:
+    from bmw_sales.simulation.scenario import ElasticityAssumptions
+
+    premium = ElasticityAssumptions.for_segment(True)
+    standard = ElasticityAssumptions.for_segment(False)
+    # Luxury buyers are less price-sensitive (own_price closer to 0).
+    assert premium.own_price > standard.own_price
+    # ...and more income-sensitive (positional good).
+    assert premium.income > standard.income
+
+
+def test_price_hike_hurts_premium_less_than_standard() -> None:
+    from bmw_sales.simulation.scenario import ElasticityAssumptions
+
+    sc = ScenarioInput(region="Europe", fuel_type="Petrol", base_volume=5000, price_change_pct=15)
+    prem = simulate(sc, ElasticityAssumptions.for_segment(True)).total_change_pct
+    std = simulate(sc, ElasticityAssumptions.for_segment(False)).total_change_pct
+    # Both fall, but the premium segment falls less (more inelastic).
+    assert prem > std

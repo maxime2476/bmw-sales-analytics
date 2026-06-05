@@ -333,10 +333,19 @@ def tab_simulator(df: pd.DataFrame) -> None:
         unsafe_allow_html=True,
     )
 
-    c = st.columns(3)
+    c = st.columns(4)
     region = c[0].selectbox("Region", sorted(df[SCHEMA.REGION].unique()))
     fuel = c[1].selectbox("Fuel type", sorted(df[SCHEMA.FUEL_TYPE].unique()))
-    base_volume = c[2].number_input("Baseline annual volume", 100, 20000, 5000, step=100)
+    segment = c[2].selectbox("Segment", ["Premium / performance", "Standard"])
+    base_volume = c[3].number_input("Baseline annual volume", 100, 20000, 5000, step=100)
+    premium = segment.startswith("Premium")
+    preset = ElasticityAssumptions.for_segment(premium)
+    st.caption(
+        "Luxury buyers are far **less price-sensitive** than the mass market "
+        "(Veblen/positional effects → εₚ near 0) and **more income-sensitive** "
+        "(superior good, εᵧ ≫ 1). Premium priors: εₚ ≈ −0.3, εᵧ ≈ 2.2 · "
+        "Standard: εₚ ≈ −0.7, εᵧ ≈ 1.3."
+    )
 
     defaults = macro_defaults(region)
     st.caption(
@@ -353,11 +362,22 @@ def tab_simulator(df: pd.DataFrame) -> None:
     reg_chg = s[3].slider("Δ CO₂ stringency (pts)", -20, 30, 0)
     fx_chg = s[4].slider("FX depreciation %", -20, 20, 0)
 
-    with st.expander("Elasticity assumptions (literature priors — adjustable)"):
+    with st.expander(f"Elasticity priors — {segment} (adjustable)"):
         a = st.columns(3)
-        own_price = a[0].number_input("Own-price ε", -2.0, 0.0, -0.6, step=0.1)
-        income = a[1].number_input("Income ε", 0.0, 3.0, 1.5, step=0.1)
-        reg_sens = a[2].number_input("Regulation per +10 pts", 0.0, 0.3, 0.08, step=0.01)
+        own_price = a[0].number_input(
+            "Own-price ε", -2.0, 0.0, float(preset.own_price), step=0.05, key=f"op_{premium}"
+        )
+        income = a[1].number_input(
+            "Income ε", 0.0, 3.0, float(preset.income), step=0.1, key=f"inc_{premium}"
+        )
+        reg_sens = a[2].number_input(
+            "Regulation per +10 pts",
+            0.0,
+            0.3,
+            float(preset.regulation_per_10pts),
+            step=0.01,
+            key=f"reg_{premium}",
+        )
 
     scenario = ScenarioInput(
         region=region,

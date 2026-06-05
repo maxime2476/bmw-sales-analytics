@@ -38,6 +38,22 @@ P90 markers) replaces the illusion of a single answer.
 - **Consistent with the project's spine.** The simulator is, and remains,
   explicitly labelled as a what-if tool — never a fit to the (signal-free) data.
 
+## Segment-specific priors (luxury ≠ mass market)
+
+Generic car elasticities understate the luxury segment, so the priors are
+**segment-aware** (`for_segment(premium=...)` on both `ElasticityAssumptions` and
+`ElasticityPriors`), selectable in the UI:
+
+| Prior | Premium / performance | Standard | Why |
+|---|---|---|---|
+| Own-price εₚ | **≈ -0.3** | ≈ -0.7 | Luxury demand is price-inelastic; **Veblen / positional** effects push εₚ toward 0 at the top. |
+| Income εᵧ | **≈ 2.2** | ≈ 1.3 | Luxury cars are superior/positional goods (εᵧ ≫ 1). |
+| Fuel cross-εf | weaker | -0.15 | Fuel cost is a negligible share of TCO for premium buyers. |
+
+This addresses a fair critique: defaulting every model to εₚ ≈ -0.6 / εᵧ ≈ 1.5
+ignored the premium dynamic. The values are orders-of-magnitude priors from the
+automotive-demand and luxury-goods literature, kept explicit and user-overridable.
+
 ## Consequences
 
 - **+** Outputs are decision-grade ranges with credible intervals.

@@ -18,19 +18,22 @@ class RegionRef:
     """External-data references for one dataset region."""
 
     region: str
-    worldbank_code: str  # WB aggregate code (real)
+    worldbank_code: str  # WB aggregate code (real) — for indicators with aggregates
     currency: str  # ISO-4217, representative
     representative: str  # human label
+    country_iso3: str  # representative country (for country-only indicators)
 
 
-#: Region → external references. WB codes are official aggregate identifiers.
+#: Region → external references. WB aggregate codes for macro indicators; a
+#: representative ISO-3 country for indicators only published at country level
+#: (e.g. pump prices).
 REGION_REFS: dict[str, RegionRef] = {
-    "Asia": RegionRef("Asia", "EAS", "CNY", "East Asia & Pacific"),
-    "North America": RegionRef("North America", "NAC", "USD", "North America"),
-    "Middle East": RegionRef("Middle East", "MEA", "AED", "Middle East & N. Africa"),
-    "South America": RegionRef("South America", "LCN", "BRL", "Latin America & Carib."),
-    "Europe": RegionRef("Europe", "EMU", "EUR", "Euro area"),
-    "Africa": RegionRef("Africa", "SSF", "ZAR", "Sub-Saharan Africa"),
+    "Asia": RegionRef("Asia", "EAS", "CNY", "East Asia & Pacific", "CHN"),
+    "North America": RegionRef("North America", "NAC", "USD", "North America", "USA"),
+    "Middle East": RegionRef("Middle East", "MEA", "AED", "Middle East & N. Africa", "SAU"),
+    "South America": RegionRef("South America", "LCN", "BRL", "Latin America & Carib.", "BRA"),
+    "Europe": RegionRef("Europe", "EMU", "EUR", "Euro area", "DEU"),
+    "Africa": RegionRef("Africa", "SSF", "ZAR", "Sub-Saharan Africa", "ZAF"),
 }
 
 REGIONS: tuple[str, ...] = tuple(REGION_REFS.keys())

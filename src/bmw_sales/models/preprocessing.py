@@ -26,6 +26,7 @@ ENRICHED_NUMERIC: tuple[str, ...] = (
     "gdp_per_capita_usd",
     "regulation_stringency_index",
     "fleet_co2_target_g_km",
+    "co2_emissions_pc",
     "price_usd_per_litre",
     "usd_per_unit",
 )

@@ -29,6 +29,12 @@ def test_regulation_stringency_increases_over_time() -> None:
     assert df["regulation_stringency_index"].iloc[-1] > df["regulation_stringency_index"].iloc[0]
 
 
+def test_co2_client_exposes_emissions_per_capita() -> None:
+    df = CO2RegulationClient().fetch(region="Europe", start_year=2015, end_year=2020).data
+    assert "co2_emissions_pc" in df.columns
+    assert (df["co2_emissions_pc"] > 0).all()
+
+
 def test_fx_usd_region_is_unity() -> None:
     df = FXRateClient().fetch(region="North America", start_year=2018, end_year=2020).data
     assert (df["usd_per_unit"] == 1.0).all()

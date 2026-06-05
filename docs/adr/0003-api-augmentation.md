@@ -28,12 +28,12 @@ Implement a **hybrid client architecture** (`bmw_sales.apis`):
 Four sources, mapped to the dataset's six regions via official **World Bank
 aggregate codes** (EAS, NAC, MEA, LCN, EMU, SSF) and representative currencies:
 
-| Client | Real endpoint | Mock |
-|---|---|---|
-| `WorldBankClient` | World Bank Indicators API (keyless): inflation `FP.CPI.TOTL.ZG`, GDP/cap `NY.GDP.PCAP.CD` | growth/inflation baselines per region |
-| `FXRateClient` | exchangerate.host (key optional) | realistic USD-per-unit anchors + drift |
-| `FuelPriceClient` | mock-first (no reliable keyless historical pump-price API) | regional USD/L baselines × fuel-type multipliers |
-| `CO2RegulationClient` | mock-first (no canonical free API) | curated stringency schedule (Europe leads) |
+| Client | Status | Real endpoint | Mock |
+|---|---|---|---|
+| `WorldBankClient` | 🟢 real | WB Indicators (keyless): inflation `FP.CPI.TOTL.ZG`, GDP/cap `NY.GDP.PCAP.CD` | growth/inflation baselines |
+| `FXRateClient` | 🟢 real | exchangerate.host (key optional) | realistic USD-per-unit anchors + drift |
+| `CO2RegulationClient` | 🟢 real | WB CO₂/capita `EN.GHG.CO2.PC.CE.AR5` (real) + a curated regulation-stringency proxy | synthetic emissions + curated schedule |
+| `FuelPriceClient` | 🟡 mock-first | WB pump-price `EP.PMP.SGAS.CD` — **archived by WB (2024)**; hook kept | regional USD/L baselines × fuel-type multipliers |
 
 `bmw_sales.apis.enrichment` assembles a region×year(×fuel_type) panel and
 **left-joins** it onto the sales data, never dropping rows.
@@ -43,10 +43,14 @@ aggregate codes** (EAS, NAC, MEA, LCN, EMU, SSF) and representative currencies:
 - **Offline by default for modelling.** The training pipeline runs with
   `BMW_OFFLINE_MODE=true` so model inputs are 100% deterministic. The Streamlit
   app may attempt live calls (with graceful fallback) for freshness.
-- **Real path is proven, not theoretical.** `WorldBankClient` was validated
-  end-to-end against the live API (returns real Euro-area GDP/capita). Where an
-  aggregate lacks an indicator (e.g. EMU inflation), the value is `NaN` and the
-  system degrades gracefully — an honest reflection of real-world data gaps.
+- **Real path is proven, not theoretical.** Three of the four clients are
+  validated end-to-end against live APIs (World Bank macro returns real Euro-area
+  GDP/capita; CO₂ returns real CO₂/capita ~7 t for the Euro area; FX via
+  exchangerate.host). Fuel is the honest exception: the World Bank archived its
+  pump-price indicator in 2024, so the live call returns *"deleted or archived"*
+  and the client degrades to its curated mock — reported as `mock`, not faked.
+  Where an aggregate lacks an indicator the value is `NaN` and the system degrades
+  gracefully — an honest reflection of real-world data gaps.
 - **Mock-first ≠ fake.** Mock generators are seeded deterministically and
   anchored to realistic magnitudes, so analyses are stable and defensible.
 

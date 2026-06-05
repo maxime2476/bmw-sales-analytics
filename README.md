@@ -248,17 +248,21 @@ flowchart LR
 ## 4. External-data augmentation (hybrid: real + mock)
 
 Four sources mapped to the six regions via **official World Bank aggregate codes**
-(EAS, NAC, MEA, LCN, EMU, SSF) and representative currencies. Every client
-**caches** responses, **retries** with backoff, and trips a **circuit breaker**
-to a deterministic **mock** on failure — so the project runs fully offline yet
-proves real connectivity (World Bank GDP/capita was validated live).
+(EAS, NAC, MEA, LCN, EMU, SSF) and representative currencies/countries. Every
+client **caches** responses, **retries** with backoff, and trips a **circuit
+breaker** to a deterministic **mock** on failure — so the project runs fully
+offline yet **three of the four sources are validated live** against real APIs.
 
-| Source | Real endpoint | Signal it adds |
-|---|---|---|
-| World Bank | inflation `FP.CPI.TOTL.ZG`, GDP/cap `NY.GDP.PCAP.CD` | regional purchasing power |
-| FX rates | exchangerate.host | local-currency price normalisation |
-| Fuel prices | mock-first (hook ready) | Petrol/Diesel vs electrified economics |
-| CO₂ regulation | mock-first (hook ready) | the electrification transition |
+| Source | Status | Real endpoint | Signal it adds |
+|---|---|---|---|
+| World Bank macro | 🟢 **real** | inflation `FP.CPI.TOTL.ZG`, GDP/cap `NY.GDP.PCAP.CD` | regional purchasing power |
+| FX rates | 🟢 **real** | exchangerate.host | local-currency price normalisation |
+| CO₂ emissions | 🟢 **real** | World Bank CO₂/capita `EN.GHG.CO2.PC.CE.AR5` | the electrification transition |
+| Fuel prices | 🟡 mock-first | WB pump-price `EP.PMP.SGAS.CD` **archived by WB (2024)** | Petrol/Diesel vs electrified economics |
+
+> *Honesty applies to the data layer too:* fuel stays mock-first because the World
+> Bank archived its pump-price series — the real hook is kept and the provenance is
+> reported as `mock` rather than faking it.
 
 Details: [ADR-0003](docs/adr/0003-api-augmentation.md).
 

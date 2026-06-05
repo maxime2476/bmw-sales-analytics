@@ -1,13 +1,17 @@
-"""Historical fuel-price client (mock-first, real-hook ready).
+"""Historical fuel-price client (real-hook + deterministic mock fallback).
 
 Pump prices vary strongly by region and are a key driver of demand for fuel
-types (Petrol/Diesel vs Hybrid/Electric). Reliable historical pump-price series
-are typically behind keyed providers, so this client is *mock-first* but exposes
-the same hybrid interface: if a real endpoint is configured later, only
-``_fetch_live`` needs filling in.
+types (Petrol/Diesel vs Hybrid/Electric). The live path *attempts* the World Bank
+indicator ``EP.PMP.SGAS.CD`` (pump price for gasoline, US$/litre) for a
+representative country per region, with biennial-gap forward/back-fill.
 
-Mock values are anchored to realistic regional baselines (USD per litre) with a
-mild upward trend and year-to-year volatility.
+**Honesty note (consistent with this project's principle):** the World Bank
+**archived** its pump-price series in the 2024 data refresh (the indicator now
+returns *"deleted or archived"*), and no comparable keyless public source exists.
+So in practice this client serves the deterministic **mock** (anchored to
+realistic regional USD/litre baselines), and reports its provenance as ``mock``
+rather than pretending otherwise. The real hook is kept so a future provider is a
+one-method change.
 """
 
 from __future__ import annotations
@@ -17,8 +21,11 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from bmw_sales.apis._regions import REGIONS
+from bmw_sales.apis._regions import REGIONS, ref_for
 from bmw_sales.apis.base import BaseAPIClient
+
+#: World Bank: pump price for gasoline (US$ per litre).
+_WB_PUMP_PRICE = "EP.PMP.SGAS.CD"
 
 #: Realistic ~2017 regional baselines, USD/litre (petrol equivalent).
 _BASELINE_USD_PER_L: dict[str, float] = {
@@ -43,12 +50,39 @@ class FuelPriceClient(BaseAPIClient):
 
     name = "fuel_prices"
 
+    @staticmethod
+    def _build_frame(region: str, years: np.ndarray, petrol: np.ndarray) -> pd.DataFrame:
+        """Expand a region's petrol price series into a region×year×fuel frame."""
+        records: list[dict[str, Any]] = []
+        for fuel, mult in _FUEL_MULTIPLIER.items():
+            for yr, p in zip(years, petrol):
+                records.append(
+                    {
+                        "region": region,
+                        "year": int(yr),
+                        "fuel_type": fuel,
+                        "price_usd_per_litre": round(float(max(p * mult, 0.05)), 3),
+                    }
+                )
+        return pd.DataFrame(records)
+
     def _fetch_live(self, **params: Any) -> pd.DataFrame:
-        # No keyless public historical pump-price API is reliably available;
-        # raising here makes the client transparently fall back to the mock.
-        raise NotImplementedError(
-            "No real fuel-price provider configured; using deterministic mock."
-        )
+        region = params["region"]
+        start = int(params.get("start_year", 2010))
+        end = int(params.get("end_year", 2024))
+        iso3 = ref_for(region).country_iso3
+
+        # Pump-price surveys are biennial; pull a wider window then fill the gaps.
+        raw = self._fetch_wb_indicator(iso3, _WB_PUMP_PRICE, start - 6, end)
+        if not raw:
+            raise ValueError(f"No World Bank pump-price data for {region}")
+
+        years = np.arange(start, end + 1)
+        series = pd.Series(raw).sort_index()
+        # Reindex onto the full horizon and forward/back-fill the biennial gaps.
+        filled = series.reindex(range(start - 6, end + 1)).ffill().bfill()
+        petrol = np.array([float(filled.loc[y]) for y in years])
+        return self._build_frame(region, years, petrol)
 
     def _mock(self, **params: Any) -> pd.DataFrame:
         region = params["region"]
@@ -62,19 +96,7 @@ class FuelPriceClient(BaseAPIClient):
         drift = 1 + 0.015 * (years - 2017)
         shocks = rng.normal(0, 0.06, size=len(years))
         petrol = base * drift * (1 + shocks)
-
-        records: list[dict[str, Any]] = []
-        for fuel, mult in _FUEL_MULTIPLIER.items():
-            for yr, p in zip(years, petrol):
-                records.append(
-                    {
-                        "region": region,
-                        "year": int(yr),
-                        "fuel_type": fuel,
-                        "price_usd_per_litre": round(float(max(p * mult, 0.05)), 3),
-                    }
-                )
-        return pd.DataFrame(records)
+        return self._build_frame(region, years, petrol)
 
     def fetch_all_regions(self, start_year: int = 2010, end_year: int = 2024) -> pd.DataFrame:
         """Fetch & concatenate fuel prices for every region."""

@@ -125,6 +125,27 @@ class BaseAPIClient(ABC):
 
         return _do_request()
 
+    def _fetch_wb_indicator(
+        self, area_code: str, indicator: str, start: int, end: int
+    ) -> dict[int, float]:
+        """Fetch one World Bank indicator for a country/aggregate as {year: value}.
+
+        Shared by clients backed by the (keyless) World Bank Indicators API.
+        Raises if the payload shape is unexpected; returns ``{}`` if the series
+        exists but has no observations in range.
+        """
+        url = f"{self.settings.worldbank_base_url}/country/{area_code}/indicator/{indicator}"
+        payload = self._http_get_json(
+            url, params={"date": f"{start}:{end}", "format": "json", "per_page": "500"}
+        )
+        if not isinstance(payload, list) or len(payload) < 2 or payload[1] is None:
+            raise ValueError(f"Unexpected World Bank payload for {indicator}")
+        return {
+            int(obs["date"]): float(obs["value"])
+            for obs in payload[1]
+            if obs.get("value") is not None
+        }
+
     # ------------------------------------------------------------------ #
     # Cache plumbing
     # ------------------------------------------------------------------ #

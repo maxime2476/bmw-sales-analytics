@@ -18,15 +18,25 @@ where Δp = list-price change, Δy = income (GDP/cap) growth, Δf = fuel-price
 change, Δs = regulation-stringency change, Δfx = local-currency depreciation
 (passed through to effective price via the own-price elasticity).
 
-Elasticity priors (orders of magnitude from the literature)
------------------------------------------------------------
-- **Own-price elasticity εp ≈ -0.6.** Luxury vehicles are relatively price-
-  inelastic (segment estimates commonly fall in the -0.2…-1.0 range).
-- **Income elasticity εy ≈ +1.5.** Luxury cars are superior goods (εy > 1).
-- **Fuel-price cross-elasticity εf ≈ -0.15** for combustion variants; small and
-  positive for electrified variants (substitution).
+Elasticity priors — **segment-specific** (automotive-demand & luxury-goods lit.)
+--------------------------------------------------------------------------------
+Generic car elasticities understate the luxury segment, so we differentiate
+**premium / performance** tiers (7 Series, M5, M3, i8, X5/X6) from **standard**:
+
+- **Own-price elasticity εp.** Mass-market autos sit near εp ≈ -1.0, but luxury
+  buyers are far less price-sensitive — and **Veblen effects** (status/positional
+  consumption) push εp toward 0 at the top. Premium prior **≈ -0.3**, standard
+  **≈ -0.7**.
+- **Income elasticity εy.** Luxury cars are superior/positional goods (εy ≫ 1).
+  Premium prior **≈ 2.2**, standard **≈ 1.3**.
+- **Fuel-price cross-elasticity εf ≈ -0.15** (combustion) / small positive
+  (electrified substitution) — weaker for premium buyers (fuel cost is a tiny
+  share of TCO at this price point).
 - **Regulation response.** Tighter CO₂ rules shift demand toward electrified
-  models and away from combustion ones; modelled as ±r per +10 stringency pts.
+  models; modelled as ±r per +10 stringency pts.
+
+All priors are explicit, segment-selectable and user-overridable in the UI; the
+simulator remains a labelled what-if tool, not a fit to the data.
 """
 
 from __future__ import annotations
@@ -42,14 +52,35 @@ ELECTRIFIED_FUELS: frozenset[str] = frozenset({"Hybrid", "Electric"})
 
 @dataclass(frozen=True)
 class ElasticityAssumptions:
-    """Literature-grounded elasticity priors (all user-overridable in the UI)."""
+    """Segment-specific elasticity priors (all user-overridable in the UI).
 
-    own_price: float = -0.6
-    income: float = 1.5
+    Defaults are the **standard** segment; use :meth:`for_segment` for the
+    luxury/premium tier (less price-elastic, more income-elastic).
+    """
+
+    own_price: float = -0.7
+    income: float = 1.3
     fuel_price_combustion: float = -0.15
     fuel_price_electrified: float = 0.10
     #: Demand share shifted per +10 stringency points (toward electrified).
     regulation_per_10pts: float = 0.08
+
+    @classmethod
+    def for_segment(cls, premium: bool) -> "ElasticityAssumptions":
+        """Return priors for the premium/luxury tier or the standard tier.
+
+        Premium: own-price ≈ -0.3 (Veblen-leaning, price-inelastic), income ≈ 2.2
+        (positional good), weaker fuel sensitivity. See the module docstring.
+        """
+        if premium:
+            return cls(
+                own_price=-0.3,
+                income=2.2,
+                fuel_price_combustion=-0.08,
+                fuel_price_electrified=0.06,
+                regulation_per_10pts=0.08,
+            )
+        return cls()
 
 
 @dataclass

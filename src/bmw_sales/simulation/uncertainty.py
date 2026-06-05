@@ -23,21 +23,36 @@ from bmw_sales.simulation.scenario import ELECTRIFIED_FUELS, ScenarioInput
 
 @dataclass(frozen=True)
 class ElasticityPriors:
-    """Gaussian priors (mean ± sd) on each elasticity.
+    """Gaussian priors (mean ± sd) on each elasticity — segment-specific.
 
-    Means match the literature point estimates used in the deterministic model;
-    the standard deviations encode honest parameter uncertainty.
+    Means match the deterministic model's **standard**-segment priors; the
+    standard deviations encode honest parameter uncertainty. Use
+    :meth:`for_segment` for the luxury/premium tier.
     """
 
-    own_price_mean: float = -0.6
+    own_price_mean: float = -0.7
     own_price_sd: float = 0.2
-    income_mean: float = 1.5
+    income_mean: float = 1.3
     income_sd: float = 0.4
     fuel_combustion_mean: float = -0.15
     fuel_electrified_mean: float = 0.10
     fuel_sd: float = 0.08
     regulation_mean: float = 0.08
     regulation_sd: float = 0.03
+
+    @classmethod
+    def for_segment(cls, premium: bool) -> "ElasticityPriors":
+        """Priors for the premium/luxury tier (Veblen-leaning) or the standard tier."""
+        if premium:
+            return cls(
+                own_price_mean=-0.3,
+                own_price_sd=0.15,
+                income_mean=2.2,
+                income_sd=0.5,
+                fuel_combustion_mean=-0.08,
+                fuel_electrified_mean=0.06,
+            )
+        return cls()
 
 
 @dataclass

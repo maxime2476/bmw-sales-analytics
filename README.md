@@ -364,8 +364,6 @@ see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 | [0008](docs/adr/0008-decision-under-uncertainty.md) | Decision-making under uncertainty (Monte-Carlo) |
 | [0009](docs/adr/0009-observability-and-docs.md) | Experiment tracking & published docs site |
 
-Project evolution is summarised in the **[CHANGELOG](CHANGELOG.md)**.
-
 ---
 
 ## 10. Author

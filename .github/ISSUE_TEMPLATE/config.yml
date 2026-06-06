@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "📖 Documentation (Wiki)"
+    url: https://github.com/maxime2476/bmw-sales-analytics/wiki
+    about: "Read the full project wiki before opening an issue."
+  - name: "📚 API reference (docs site)"
+    url: https://maxime2476.github.io/bmw-sales-analytics/
+    about: "Auto-generated API reference and ADRs."

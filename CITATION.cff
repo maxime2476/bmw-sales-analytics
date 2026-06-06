@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: BMW Luxury Sales Analytics
+message: "If you use this project, please cite it as below."
+type: software
+authors:
+  - family-names: GOURGUECHON
+    given-names: Maxime
+    email: maxime.gourguechon76@gmail.com
+repository-code: "https://github.com/maxime2476/bmw-sales-analytics"
+url: "https://maxime2476-bmw-sales-analytics.hf.space"
+abstract: >-
+  A production-grade analytics, econometrics and decision-intelligence platform
+  for the BMW luxury-car market. Notable for its intellectual-honesty
+  methodology: it statistically proves the source dataset is signal-free with a
+  leaked target, demonstrates predictive capability on a signal-bearing control
+  (cross-validated R about 0.85), and delivers business value through a labelled,
+  uncertainty-aware Scenario Simulator. Includes hybrid real+mock external-data
+  augmentation, gradient boosting and tabular deep learning benchmarks, SHAP
+  explainability, a DuckDB SQL layer, MLflow tracking, a Streamlit dashboard,
+  Docker, and a full CI/CD pipeline.
+keywords:
+  - data-science
+  - econometrics
+  - machine-learning
+  - intellectual-honesty
+  - signal-detection
+  - streamlit
+  - mlops
+license: MIT

@@ -328,6 +328,11 @@ see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
   **Dependabot** updates (pip · actions · docker).
 - **SQL analytics:** decision queries in `sql/queries/` executed by **DuckDB**
   directly over the CSV (window functions, quantiles, YoY) — `make sql`.
+- **Advanced uncertainty & causality:** **conformal prediction** (calibrated,
+  distribution-free intervals that honestly widen to ~95% of range on the
+  signal-free data — `make conformal`), a **causal** price→demand analysis via
+  backdoor adjustment under an explicit DAG (`make causal`), and an optional
+  **Claude-powered scenario narrator** with a deterministic offline fallback.
 - **Experiment tracking:** every benchmarked model is logged to **MLflow**
   (`mlflow ui --backend-store-uri ./mlruns`).
 - **Docs site:** **MkDocs Material** (ADRs + auto API reference) auto-deployed to

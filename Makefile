@@ -6,7 +6,7 @@
 PY := python
 
 .PHONY: help install install-dev format lint typecheck test test-fast \
-        eda audit capability sql econ pipeline dl-report reports app docker-build docker-up clean
+        eda audit capability conformal sql econ causal pipeline dl-report reports app docker-build docker-up clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -37,6 +37,9 @@ test-fast: ## Run tests, skip integration (no network)
 eda: ## Generate the Data Integrity Report
 	$(PY) -m bmw_sales.data.validation
 
+conformal: ## Conformal prediction intervals (honest, calibrated uncertainty)
+	$(PY) -m bmw_sales.models.conformal
+
 capability: ## Demonstrate predictive capability on a signal-bearing target
 	$(PY) -m bmw_sales.audit.capability
 
@@ -45,6 +48,9 @@ audit: ## Run the statistical signal audit (permutation + positive control)
 
 sql: ## Run the DuckDB SQL business-insights report
 	$(PY) -m bmw_sales.sql.report
+
+causal: ## Causal price->demand analysis (backdoor adjustment)
+	$(PY) -m bmw_sales.econometrics.causal
 
 econ: ## Generate the econometric analysis report
 	$(PY) -m bmw_sales.econometrics.report
@@ -55,7 +61,7 @@ pipeline: ## Train & benchmark all ML models (writes reports + artefacts)
 dl-report: ## Benchmark the tabular DL model vs gradient boosting
 	$(PY) -m bmw_sales.models.dl_report
 
-reports: eda audit capability sql econ pipeline dl-report ## Regenerate every analysis report
+reports: eda audit capability conformal sql econ causal pipeline dl-report ## Regenerate every analysis report
 
 app: ## Launch the Streamlit dashboard
 	streamlit run app/streamlit_app.py

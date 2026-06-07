@@ -34,6 +34,7 @@ from bmw_sales.econometrics.ols_models import (  # noqa: E402
     prove_leakage,
 )
 from bmw_sales.explainability.shap_analysis import compute_shap  # noqa: E402
+from bmw_sales.simulation.narrator import narrate  # noqa: E402
 from bmw_sales.simulation.scenario import (  # noqa: E402
     ElasticityAssumptions,
     ScenarioInput,
@@ -415,6 +416,9 @@ def tab_simulator(df: pd.DataFrame) -> None:
             f"{result.total_change_pct:+.1f}%",
             f"80% CI [{ci_lo:+.0f}% , {ci_hi:+.0f}%]",
         )
+
+    # Executive narrative (Claude if a key is set, else deterministic template).
+    st.info("📝 **Executive summary** — " + narrate(scenario, result, dist))
 
     # Waterfall of multiplicative contributions.
     drivers = [c.driver for c in result.contributions]

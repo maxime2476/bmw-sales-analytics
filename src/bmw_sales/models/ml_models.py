@@ -1,10 +1,7 @@
-"""Gradient-boosting models (XGBoost, LightGBM, CatBoost) with light tuning.
+"""XGBoost, LightGBM and CatBoost wrappers with a small randomised search.
 
-Each model is wrapped in a sklearn ``Pipeline`` together with the shared
-preprocessor so the comparison is fair and the whole object is serialisable.
-Hyperparameters are tuned with a compact randomised search; given the signal-free
-data (ADR-0002) tuning will not rescue performance — the point is to demonstrate
-the *technique* and report honest held-out metrics.
+Each model shares the same preprocessor inside a sklearn Pipeline so the
+comparison is fair and the result is serialisable.
 """
 
 from __future__ import annotations
@@ -27,9 +24,7 @@ from bmw_sales.models.evaluate import (
 )
 from bmw_sales.models.preprocessing import Dataset, build_preprocessor
 
-# --------------------------------------------------------------------------- #
 # Model & hyperparameter registry
-# --------------------------------------------------------------------------- #
 SEED = get_settings().random_seed
 
 

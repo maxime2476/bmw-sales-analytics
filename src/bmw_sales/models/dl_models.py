@@ -1,14 +1,9 @@
-"""Tabular deep-learning baseline (PyTorch MLP) and ML/DL justification.
+"""Tabular PyTorch MLP, used to compare against the gradient boosters.
 
-We include a feed-forward tabular neural net to test — empirically — whether
-deep learning adds anything over gradient boosting on this problem. The brief
-asks us to *justify* DL rather than assume it; given the signal-free data
-(ADR-0002) we expect the MLP to match the boosters at "no skill", which is
-itself the honest, defensible conclusion (boosting is the right default for
-tabular data of this size).
-
-A well-known Windows/Anaconda OpenMP clash (``libiomp5md.dll`` loaded twice) is
-neutralised before importing torch.
+A feed-forward net with BatchNorm, dropout and early stopping. It's here to check
+whether deep learning beats boosting on this data (it doesn't). The
+``KMP_DUPLICATE_LIB_OK`` line works around the Windows/Anaconda OpenMP clash
+before torch is imported.
 """
 
 from __future__ import annotations

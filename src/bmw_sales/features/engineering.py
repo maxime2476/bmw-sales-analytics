@@ -1,11 +1,7 @@
-"""Feature engineering shared by the econometric and ML/DL pipelines.
+"""Feature engineering shared by the econometric and ML pipelines.
 
-These transforms encode domain knowledge about the used-luxury-car market
-(vehicle age, usage intensity, electrification, premium tier, price normalised
-by displacement). They are *legitimate* features regardless of whether the
-underlying data carries signal — the engineering itself is part of the
-deliverable, and the same frame feeds both statsmodels and the gradient-boosting
-models so comparisons are apples-to-apples.
+Adds vehicle age, usage intensity, electrification and premium-tier flags, and a
+couple of log transforms. The same frame feeds statsmodels and the boosters.
 """
 
 from __future__ import annotations
@@ -79,7 +75,7 @@ def feature_columns(*, include_leakage: bool = False) -> dict[str, list[str]]:
     Parameters
     ----------
     include_leakage:
-        If ``True``, includes ``Sales_Volume`` in the numeric set — used *only*
+        If ``True``, includes ``Sales_Volume`` in the numeric set - used *only*
         to demonstrate target leakage for the classification task (see ADR-0002).
     """
     categorical = list(SCHEMA.CATEGORICAL) + list(ENGINEERED_CATEGORICAL)

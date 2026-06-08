@@ -1,4 +1,4 @@
-"""BMW Luxury Sales Analytics — premium Streamlit dashboard.
+"""BMW Luxury Sales Analytics - premium Streamlit dashboard.
 
 A decision-support cockpit over 15 years of BMW sales, pairing honest analytics
 (econometrics, ML/DL benchmarks, SHAP) with a forward-looking Scenario Simulator.
@@ -52,9 +52,7 @@ st.set_page_config(
 apply_theme()
 
 
-# --------------------------------------------------------------------------- #
 # Cached analytics
-# --------------------------------------------------------------------------- #
 @st.cache_data(show_spinner="Estimating econometric models…")
 def _econometrics() -> dict:
     df = da.get_raw()
@@ -77,9 +75,7 @@ def _model_metrics() -> dict:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
 
 
-# --------------------------------------------------------------------------- #
 # Sidebar
-# --------------------------------------------------------------------------- #
 def _sidebar(df: pd.DataFrame) -> dict:
     st.sidebar.markdown("## ◆ Filters")
     regions = st.sidebar.multiselect(
@@ -111,9 +107,7 @@ def _apply_filters(df: pd.DataFrame, f: dict) -> pd.DataFrame:
     ]
 
 
-# --------------------------------------------------------------------------- #
 # Tabs
-# --------------------------------------------------------------------------- #
 def tab_overview(df: pd.DataFrame, provenance: dict[str, str]) -> None:
     c = st.columns(5)
     electrified = df[SCHEMA.FUEL_TYPE].isin(["Hybrid", "Electric"]).mean() * 100
@@ -209,12 +203,12 @@ def tab_integrity() -> None:
         st.metric("Implied threshold", f"Sales_Volume ≥ {report.leakage_threshold:,}")
         st.markdown(
             "<span class='small-note'>`Sales_Classification` is a deterministic "
-            "threshold on `Sales_Volume` — perfectly separable, so it must be "
+            "threshold on `Sales_Volume` - perfectly separable, so it must be "
             "excluded as a feature.</span>",
             unsafe_allow_html=True,
         )
 
-    with st.expander("🔬 Statistical proof — positive control + permutation test"):
+    with st.expander("🔬 Statistical proof - positive control + permutation test"):
         control, perm = da.get_signal_audit()
         cc = st.columns(3)
         with cc[0]:
@@ -225,7 +219,7 @@ def tab_integrity() -> None:
             kpi("Permutation p-value", f"{perm.p_value:.3f}", "regression")
         st.caption(
             "The **same** pipeline recovers a known synthetic signal (high R²) yet "
-            "scores ~0 on the real target — so the null result is the data's, not the "
+            "scores ~0 on the real target - so the null result is the data's, not the "
             "model's. The permutation test confirms the real score is "
             "indistinguishable from shuffled-label chance."
         )
@@ -255,7 +249,7 @@ def tab_econometrics() -> None:
     st.info(f"**Price elasticity of demand:** {econ['elasticity_text']}", icon="📉")
     st.markdown(
         "- A real luxury market would show a negative, significant price elasticity "
-        "and a high hedonic R². Here both are ~0 — pricing power is **unobservable "
+        "and a high hedonic R². Here both are ~0 - pricing power is **unobservable "
         "in this data**, so list-price decisions must rely on external benchmarks.\n"
         "- Detailed coefficient tables: `reports/econometric_analysis.md`."
     )
@@ -263,7 +257,7 @@ def tab_econometrics() -> None:
 
 def tab_models() -> None:
     metrics = _model_metrics()
-    st.markdown("### Model benchmark — honest results")
+    st.markdown("### Model benchmark - honest results")
     if not metrics:
         st.warning("Run `make pipeline` to generate the benchmark metrics.")
         return
@@ -298,13 +292,13 @@ def tab_models() -> None:
         st.plotly_chart(fig, use_container_width=True)
     st.error(
         "ROC-AUC ≈ 1.0 only appears when the leaked `Sales_Volume` is left in. "
-        "That is a **red flag**, not a win — see ADR-0002.",
+        "That is a **red flag**, not a win - see ADR-0002.",
         icon="🚩",
     )
 
 
 def tab_explainability() -> None:
-    st.markdown("### Explainability — SHAP feature attributions")
+    st.markdown("### Explainability - SHAP feature attributions")
     model, ds = da.get_regression_model()
     with st.spinner("Computing SHAP values…"):
         shap_res = compute_shap(model.pipeline, ds.X_test, max_rows=300)
@@ -320,7 +314,7 @@ def tab_explainability() -> None:
     st.plotly_chart(fig, use_container_width=True)
     st.caption(
         "SHAP magnitudes are tiny relative to the ~5,000-unit mean volume and have "
-        "no stable ranking across runs — the explainer honestly confirms no feature "
+        "no stable ranking across runs - the explainer honestly confirms no feature "
         "systematically drives the prediction."
     )
 
@@ -328,7 +322,7 @@ def tab_explainability() -> None:
 def tab_simulator(df: pd.DataFrame) -> None:
     st.markdown("### Scenario Simulator")
     st.markdown(
-        "<span class='small-note'>Forward-looking what-if tool — a decision-support "
+        "<span class='small-note'>Forward-looking what-if tool - a decision-support "
         "simulation grounded in literature elasticities and real macro data, NOT a "
         "fit to the historical dataset.</span>",
         unsafe_allow_html=True,
@@ -363,7 +357,7 @@ def tab_simulator(df: pd.DataFrame) -> None:
     reg_chg = s[3].slider("Δ CO₂ stringency (pts)", -20, 30, 0)
     fx_chg = s[4].slider("FX depreciation %", -20, 20, 0)
 
-    with st.expander(f"Elasticity priors — {segment} (adjustable)"):
+    with st.expander(f"Elasticity priors - {segment} (adjustable)"):
         a = st.columns(3)
         own_price = a[0].number_input(
             "Own-price ε", -2.0, 0.0, float(preset.own_price), step=0.05, key=f"op_{premium}"
@@ -418,7 +412,7 @@ def tab_simulator(df: pd.DataFrame) -> None:
         )
 
     # Executive narrative (Claude if a key is set, else deterministic template).
-    st.info("📝 **Executive summary** — " + narrate(scenario, result, dist))
+    st.info("📝 **Executive summary** - " + narrate(scenario, result, dist))
 
     # Waterfall of multiplicative contributions.
     drivers = [c.driver for c in result.contributions]
@@ -435,11 +429,11 @@ def tab_simulator(df: pd.DataFrame) -> None:
             totals={"marker": {"color": GOLD}},
         )
     )
-    fig.update_layout(title="Demand drivers — % contribution to projected volume")
+    fig.update_layout(title="Demand drivers - % contribution to projected volume")
     st.plotly_chart(fig, use_container_width=True)
 
     # Monte-Carlo predictive distribution with credible intervals.
-    st.markdown("#### Uncertainty — Monte-Carlo projected demand")
+    st.markdown("#### Uncertainty - Monte-Carlo projected demand")
     hist = px.histogram(
         dist.samples, nbins=50, title="Projected demand distribution (elasticity priors)"
     )
@@ -454,13 +448,13 @@ def tab_simulator(df: pd.DataFrame) -> None:
     st.plotly_chart(hist, use_container_width=True)
     st.caption(
         "Elasticities are uncertain, so the projection is a **distribution**, not a "
-        "point. The 80% credible interval is the decision-relevant range — what a "
+        "point. The 80% credible interval is the decision-relevant range - what a "
         "strategy team would actually plan against."
     )
 
 
 def tab_sql() -> None:
-    st.markdown("### SQL Insights — DuckDB over the raw CSV")
+    st.markdown("### SQL Insights - DuckDB over the raw CSV")
     st.caption(
         "Decision-oriented analytics in plain SQL (window functions, quantiles, "
         "YoY) executed by DuckDB with no ETL. Queries live in `sql/queries/`."
@@ -500,9 +494,7 @@ def tab_sql() -> None:
     )
 
 
-# --------------------------------------------------------------------------- #
 # Main
-# --------------------------------------------------------------------------- #
 def main() -> None:
     hero("BMW Luxury Sales Analytics", "Econometrics · Machine Learning · Decision Intelligence")
     raw = da.get_raw()
@@ -540,7 +532,7 @@ def main() -> None:
         tab_simulator(raw)
 
     st.markdown(
-        "<hr/><span class='small-note'>© Maxime GOURGUECHON — built with an "
+        "<hr/><span class='small-note'>© Maxime GOURGUECHON - built with an "
         "honest-analytics methodology. See docs/adr for decisions.</span>",
         unsafe_allow_html=True,
     )

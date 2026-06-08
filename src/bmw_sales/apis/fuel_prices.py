@@ -1,17 +1,10 @@
-"""Historical fuel-price client (real-hook + deterministic mock fallback).
+"""Fuel prices per region/year/fuel type.
 
-Pump prices vary strongly by region and are a key driver of demand for fuel
-types (Petrol/Diesel vs Hybrid/Electric). The live path *attempts* the World Bank
-indicator ``EP.PMP.SGAS.CD`` (pump price for gasoline, US$/litre) for a
-representative country per region, with biennial-gap forward/back-fill.
-
-**Honesty note (consistent with this project's principle):** the World Bank
-**archived** its pump-price series in the 2024 data refresh (the indicator now
-returns *"deleted or archived"*), and no comparable keyless public source exists.
-So in practice this client serves the deterministic **mock** (anchored to
-realistic regional USD/litre baselines), and reports its provenance as ``mock``
-rather than pretending otherwise. The real hook is kept so a future provider is a
-one-method change.
+The live path tries the World Bank pump-price indicator (EP.PMP.SGAS.CD), but
+that series was archived in the 2024 refresh and no keyless replacement exists,
+so in practice this falls back to the mock (regional USD/litre baselines with
+fuel-type multipliers) and reports its provenance as 'mock'. The _fetch_live hook
+is kept for when a provider is available.
 """
 
 from __future__ import annotations

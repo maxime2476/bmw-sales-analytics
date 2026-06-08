@@ -64,7 +64,7 @@ def run(*, tune: bool = True, n_iter: int = 6) -> str:
     if log_models(reg_models, run_group="regression"):
         log_models(clf_models, run_group="classification")
         log_models(leak_models, run_group="leakage-demo")
-        print("[OK] Logged runs to MLflow (./mlruns)")
+        print("Logged runs to MLflow (./mlruns)")
 
     # --- Persist a machine-readable metrics summary ---
     summary = {
@@ -91,7 +91,7 @@ def _build_markdown(
 ) -> str:
     leak_best = best_model(leak_models)
     return (
-        f"# Model Benchmark — BMW Sales (2010–2024)\n\n"
+        f"# Model Benchmark - BMW Sales (2010–2024)\n\n"
         f"*Generated: {date.today().isoformat()} · Author: Maxime GOURGUECHON*\n\n"
         f"> Gradient-boosting benchmark on the API-enriched dataset. Metrics are "
         f"held-out (test split). Read with the "
@@ -102,28 +102,28 @@ def _build_markdown(
         f"R² ≈ 0** and **leakage-free classification ROC-AUC ≈ 0.5**: there is no "
         f"signal to learn. The contrast with the leakage run (ROC-AUC ≈ 1.0) "
         f"validates that our honest setup correctly excludes the leaked column.\n\n"
-        f"## 1. Regression — target `Sales_Volume`\n\n"
+        f"## 1. Regression - target `Sales_Volume`\n\n"
         f"{_metrics_table(reg_models)}\n\n"
         f"**Best:** {reg_best.name} (R² = {reg_best.metrics['r2']:.4f}). "
-        f"An R² at/below zero means the models do not beat predicting the mean — "
+        f"An R² at/below zero means the models do not beat predicting the mean - "
         f"the honest, expected outcome on noise.\n\n"
-        f"## 2. Classification — target `Sales_Classification` (leakage-free)\n\n"
+        f"## 2. Classification - target `Sales_Classification` (leakage-free)\n\n"
         f"{_metrics_table(clf_models)}\n\n"
         f"**Best:** {clf_best.name} (ROC-AUC = {clf_best.metrics['roc_auc']:.4f}). "
         f"ROC-AUC ≈ 0.5 confirms no discriminative signal once the leaked "
         f"`Sales_Volume` is correctly removed.\n\n"
-        f"## 3. Leakage demonstration — `Sales_Volume` left in as a feature\n\n"
+        f"## 3. Leakage demonstration - `Sales_Volume` left in as a feature\n\n"
         f"{_metrics_table(leak_models)}\n\n"
         f"**Result:** {leak_best.name} reaches ROC-AUC = "
         f"{leak_best.metrics['roc_auc']:.4f}. This near-perfect score is **not a "
-        f"success** — it is the signature of target leakage (the label is a "
+        f"success** - it is the signature of target leakage (the label is a "
         f"deterministic threshold on this feature) and is shown here only to make "
         f"the failure mode explicit.\n\n"
         f"## Takeaways\n\n"
         f"- Tuning cannot manufacture signal that the data does not contain.\n"
         f"- A >0.99 classification score on this data is a **red flag**, not a win.\n"
         f"- Decision value is delivered by the Scenario Simulator, not these "
-        f"in-sample models — see ADR-0002.\n"
+        f"in-sample models - see ADR-0002.\n"
     )
 
 
@@ -138,8 +138,8 @@ def main() -> None:
     markdown = run(tune=not args.fast, n_iter=args.n_iter)
     out_path = REPORTS_DIR / "model_benchmark.md"
     out_path.write_text(markdown, encoding="utf-8")
-    print(f"[OK] Model benchmark written to {out_path}")
-    print(f"[OK] Artefacts saved under {MODELS_DIR}")
+    print(f"Model benchmark written to {out_path}")
+    print(f"Artefacts saved under {MODELS_DIR}")
 
 
 if __name__ == "__main__":

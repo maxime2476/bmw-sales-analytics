@@ -1,21 +1,8 @@
-"""Predictive-capability demonstration — *can the pipeline actually predict?*
+"""Run the production pipeline on a synthetic target with known structure.
 
-The data-integrity work proves a **negative** (this dataset is signal-free). A
-fair reviewer then asks the right question: *"Fine, but can you deliver a working
-model when there IS something to predict?"* This module answers it.
-
-On a **signal-bearing target** (a known function of the features, clearly
-labelled — see :func:`bmw_sales.audit.control.make_signal_bearing_target`) we run
-the *same* production pipeline and validate it **honestly**:
-
-- **k-fold cross-validation** (mean ± std R²) — not a single lucky split;
-- a **learning curve** — showing the model genuinely learns as data grows;
-- an honest **held-out test R²**;
-- **SHAP** attributions that **recover the true drivers** (price, engine,
-  region, premium tier, electrification) used to build the target.
-
-Together: the pipeline reaches **R² ≈ 0.9** here, while scoring ≈ 0 on the real
-data — so the null result is the *data's*, and predictive competence is proven.
+Reports cross-validated R2, a learning curve, the held-out R2 and the top SHAP
+features. The point is to check the pipeline can learn when the data actually has
+signal (it reaches R2 ~0.85), as a contrast to the real data where it scores ~0.
 """
 
 from __future__ import annotations
@@ -99,7 +86,7 @@ def demonstrate(df: pd.DataFrame, *, sample: int = 12000, cv: int = 5) -> Capabi
     )
     lc_test = [float(s) for s in test_scores.mean(axis=1)]
 
-    # 4) SHAP — does the model recover the TRUE drivers?
+    # 4) SHAP - does the model recover the TRUE drivers?
     from bmw_sales.explainability.shap_analysis import compute_shap
 
     shap_res = compute_shap(pipe, ds.X_test, max_rows=400)
@@ -125,9 +112,9 @@ def build_report(result: CapabilityResult) -> str:
         for n, r2 in zip(result.learning_curve_sizes, result.learning_curve_test)
     )
     drivers = "\n".join(f"| {f} | {v:.1f} |" for f, v in result.top_drivers)
-    verdict = "SKILFUL — predicts the known signal" if result.is_skilful else "inconclusive"
+    verdict = "SKILFUL - predicts the known signal" if result.is_skilful else "inconclusive"
     return (
-        f"# Predictive Capability — *can the pipeline predict when there IS signal?*\n\n"
+        f"# Predictive Capability - *can the pipeline predict when there IS signal?*\n\n"
         f"*Generated: {date.today().isoformat()} · Author: Maxime GOURGUECHON*\n\n"
         f"> Counterpart to the [Signal Audit](signal_audit.md): the same production "
         f"pipeline, run on a **clearly-labelled signal-bearing target**, validated "
@@ -138,18 +125,18 @@ def build_report(result: CapabilityResult) -> str:
         f"| **Held-out test R²** | **{result.test_r2:.3f}** |\n"
         f"| Verdict | {verdict} |\n\n"
         f"The CV and held-out scores agree (no overfitting), and the score is stable "
-        f"across folds (low σ) — this is a *validated* model, not a lucky split.\n\n"
+        f"across folds (low σ) - this is a *validated* model, not a lucky split.\n\n"
         f"## Learning curve (test R² vs training size)\n\n"
         f"| Train size | Test R² |\n|---|---|\n{lc}\n\n"
-        f"Performance rises monotonically with data — the model genuinely learns.\n\n"
-        f"## SHAP — the model recovers the TRUE drivers\n\n"
+        f"Performance rises monotonically with data - the model genuinely learns.\n\n"
+        f"## SHAP - the model recovers the TRUE drivers\n\n"
         f"The synthetic target was built from region, premium tier, engine size, "
         f"price and electrification. SHAP ranks exactly those at the top:\n\n"
         f"| Feature | mean \\|SHAP\\| |\n|---|---|\n{drivers}\n\n"
         f"## The point\n\n"
         f"On signal-bearing data the pipeline reaches **R² ≈ {result.cv_mean:.2f}**; on "
         f"the real BMW data it scores **≈ 0** (see [model_benchmark.md](model_benchmark.md)). "
-        f"The pipeline is sound and predictively competent — the null result is a "
+        f"The pipeline is sound and predictively competent - the null result is a "
         f"property of the *data*, proven, not a failure of the modelling.\n"
     )
 
@@ -164,7 +151,7 @@ def main() -> None:
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     out = REPORTS_DIR / "predictive_capability.md"
     out.write_text(build_report(demonstrate(load_raw())), encoding="utf-8")
-    print(f"[OK] Predictive-capability report written to {out}")
+    print(f"Predictive-capability report written to {out}")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,8 @@
-"""Optional MLflow experiment tracking for the training pipeline.
+"""Optional MLflow logging for the training run.
 
-Logs every benchmarked model as an MLflow run (params, metrics, tags) to a local
-file-based store (``mlruns/``). Tracking is **best-effort**: if MLflow is not
-installed (it is a dev-only dependency) the pipeline runs unchanged.
-
-Browse the runs with::
-
-    mlflow ui --backend-store-uri ./mlruns
+Logs each model (params, metrics, tags) to a local mlruns/ store. If MLflow
+isn't installed it just does nothing. Browse with
+``mlflow ui --backend-store-uri ./mlruns``.
 """
 
 from __future__ import annotations
@@ -34,7 +30,7 @@ def log_models(
     """
     try:
         import mlflow
-    except Exception:  # noqa: BLE001 — optional dependency
+    except Exception:  # noqa: BLE001 - optional dependency
         return False
 
     mlflow.set_tracking_uri(f"file:{MLRUNS_DIR.as_posix()}")

@@ -1,30 +1,10 @@
-"""Causal framing of the price → demand question (backdoor adjustment).
+"""Estimate the causal price -> demand effect via backdoor adjustment.
 
-Correlation is zero here (see the Signal Audit), but a reviewer rightly asks the
-*causal* question: **what is the effect of list price on demand?** Answering it
-properly requires being explicit about the assumed causal structure, not just
-running a regression.
-
-### Assumed causal DAG
-
-```
-        Region ─┐   Model tier ─┐   Year ─┐   Engine ─┐
-                ▼               ▼         ▼           ▼
-              Price_USD  ───────────────►  Sales_Volume
-```
-
-Region, model tier, year and engine size plausibly influence **both** price and
-demand — they are **confounders**. Under this DAG the *backdoor criterion* says
-that conditioning on {Region, Model, Year, Engine, age} blocks the non-causal
-paths, so the coefficient on (log) price in a regression that adjusts for them
-identifies the causal price→demand effect.
-
-We report the **naïve** (unadjusted) and **backdoor-adjusted** estimates with HC3
-robust SE. Consistent with the data being signal-free, both are ≈ 0 — but the
-*method* (state the DAG, justify the adjustment set, estimate, report
-uncertainty) is the point. This is a deliberately lightweight, dependency-free
-treatment (statsmodels only); a full do-calculus engine (e.g. DoWhy) would add a
-heavy dependency for no extra insight on signal-free data.
+Assumes Region, Model, Year and Engine confound Price and Sales_Volume, so
+adjusting for them (the backdoor set) isolates the price coefficient. Reports the
+naive and adjusted OLS estimates with HC3 robust SE. On this data both are ~0;
+the function does pick up an effect when one is present (see the tests). Kept to
+statsmodels rather than pulling in a full do-calculus library like DoWhy.
 """
 
 from __future__ import annotations
@@ -89,7 +69,7 @@ def build_report(result: CausalResult) -> str:
         else "no causal price→demand effect (consistent with a signal-free DGP)"
     )
     return (
-        f"# Causal Analysis — does price *cause* demand?\n\n"
+        f"# Causal Analysis - does price *cause* demand?\n\n"
         f"*Generated: {date.today().isoformat()} · Author: Maxime GOURGUECHON*\n\n"
         f"> Backdoor adjustment under an explicit DAG (see `econometrics/causal.py`). "
         f"Reproduce with `make causal`.\n\n"
@@ -104,7 +84,7 @@ def build_report(result: CausalResult) -> str:
         f"Adjustment set: `{', '.join(result.adjustment_set)}`.\n\n"
         f"## Conclusion\n\n"
         f"**{verdict}.** Under the stated assumptions, the adjusted effect is "
-        f"statistically indistinguishable from zero — there is no evidence that "
+        f"statistically indistinguishable from zero - there is no evidence that "
         f"price causally moves demand in this dataset. The value here is the "
         f"**method**: an explicit DAG, a justified adjustment set, and an honest "
         f"null. For forward-looking price effects grounded in the literature, see "
@@ -120,7 +100,7 @@ def main() -> None:
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     out = REPORTS_DIR / "causal_analysis.md"
     out.write_text(build_report(result), encoding="utf-8")
-    print(f"[OK] Causal analysis written to {out}")
+    print(f"Causal analysis written to {out}")
     print(f"     naive {result.naive_effect:+.4f} | adjusted {result.adjusted_effect:+.4f}")
 
 

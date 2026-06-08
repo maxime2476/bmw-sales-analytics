@@ -18,7 +18,7 @@ class RegionRef:
     """External-data references for one dataset region."""
 
     region: str
-    worldbank_code: str  # WB aggregate code (real) — for indicators with aggregates
+    worldbank_code: str  # WB aggregate code (real) - for indicators with aggregates
     currency: str  # ISO-4217, representative
     representative: str  # human label
     country_iso3: str  # representative country (for country-only indicators)

@@ -1,14 +1,8 @@
-"""Monte-Carlo uncertainty propagation for the Scenario Simulator.
+"""Monte-Carlo uncertainty for the scenario simulator.
 
-A point estimate ("demand +15.8%") is not a decision-grade answer — a board
-needs the *range*. Elasticities are themselves uncertain, so we place priors on
-them and propagate that uncertainty through the constant-elasticity model with a
-Monte-Carlo simulation, yielding a **distribution** of projected demand and
-**credible intervals** rather than a single number.
-
-This is a transparent Bayesian-flavoured treatment: priors are explicit and
-adjustable, sampling is seeded and reproducible, and the output is a full
-posterior-predictive-style distribution of the outcome.
+Puts Gaussian priors on the elasticities and samples them through the
+constant-elasticity model, so each scenario returns a distribution of projected
+demand with credible intervals instead of a single point. Sampling is seeded.
 """
 
 from __future__ import annotations
@@ -23,7 +17,7 @@ from bmw_sales.simulation.scenario import ELECTRIFIED_FUELS, ScenarioInput
 
 @dataclass(frozen=True)
 class ElasticityPriors:
-    """Gaussian priors (mean ± sd) on each elasticity — segment-specific.
+    """Gaussian priors (mean ± sd) on each elasticity - segment-specific.
 
     Means match the deterministic model's **standard**-segment priors; the
     standard deviations encode honest parameter uncertainty. Use

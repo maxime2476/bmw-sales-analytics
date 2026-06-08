@@ -1,6 +1,6 @@
-# SQL Business Insights — BMW Sales
+# SQL Business Insights - BMW Sales
 
-*Generated: 2026-06-04 · Author: Maxime GOURGUECHON*
+*Generated: 2026-06-08 · Author: Maxime GOURGUECHON*
 
 > Decision-oriented analytics run with **DuckDB** directly over the raw CSV (no ETL). Queries live in `sql/queries/`. Reproduce with `make sql`.
 

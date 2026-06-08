@@ -1,9 +1,7 @@
-"""DuckDB-powered SQL analytics over the raw BMW dataset.
+"""Run the ``.sql`` files in sql/queries/ against the CSV with DuckDB.
 
-A lightweight analytical layer that runs versioned ``.sql`` files directly
-against the CSV via DuckDB — no database server, no ETL. This keeps the
-decision-oriented business queries in plain SQL (reviewable, portable) while the
-Python layer just orchestrates execution.
+No database server or ETL; the queries are plain SQL and this module just runs
+them.
 """
 
 from __future__ import annotations

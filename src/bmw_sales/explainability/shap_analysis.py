@@ -1,12 +1,8 @@
-"""SHAP explainability for the tree-based models.
+"""SHAP feature attributions for the tree models.
 
-Provides feature attributions for a fitted sklearn ``Pipeline`` (preprocessor +
-gradient-boosted tree). We explain the model in its *transformed* feature space
-and map attributions back to readable feature names for the dashboard.
-
-Because the data is signal-free (ADR-0002), SHAP magnitudes are expectedly tiny
-and noisy — the explainability tab uses this honestly to show that no feature
-systematically drives predictions.
+Explains a fitted Pipeline (preprocessor + tree) in its transformed feature
+space and maps the attributions back to readable names. On this data the SHAP
+values come out small and unstable, which the dashboard shows as-is.
 """
 
 from __future__ import annotations
@@ -42,7 +38,7 @@ def _transformed_feature_names(preprocessor: Any) -> list[str]:
     """Best-effort readable names for the ColumnTransformer output."""
     try:
         return list(preprocessor.get_feature_names_out())
-    except Exception:  # noqa: BLE001 — fall back to positional names
+    except Exception:  # noqa: BLE001 - fall back to positional names
         return []
 
 

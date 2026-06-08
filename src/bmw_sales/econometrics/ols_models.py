@@ -1,18 +1,8 @@
-"""Explanatory econometrics for the BMW market.
+"""Explanatory OLS models (inference, not prediction).
 
-The goal here is *inference*, not prediction: quantify and test economic
-relationships with proper standard errors and diagnostics. Consistent with the
-Data Integrity Report (ADR-0002), we expect most effects to be statistically
-indistinguishable from zero — and we report that honestly, with the rigour
-(robust SE, VIF, F-tests) a reviewer expects, rather than hiding it.
-
-Models
-------
-- **Hedonic price model** — decompose ``Price_USD`` into attribute contributions.
-- **Demand model** — regress ``Sales_Volume`` on price and external macro drivers.
-- **Price elasticity** — log-log demand specification (coefficient = elasticity).
-- **Leakage proof** — formally demonstrate ``Sales_Classification`` is a
-  deterministic threshold on ``Sales_Volume``.
+Hedonic price model, a demand model, the log-log price elasticity, a VIF
+diagnostic and the leakage proof for Sales_Classification. All use HC3 robust
+standard errors. On this data most effects come out near zero.
 """
 
 from __future__ import annotations
@@ -75,9 +65,7 @@ def _summarise(name: str, formula: str, result: Any) -> RegressionSummary:
     )
 
 
-# --------------------------------------------------------------------------- #
 # 1. Hedonic price model
-# --------------------------------------------------------------------------- #
 def hedonic_price_model(df: pd.DataFrame) -> RegressionSummary:
     """Hedonic OLS decomposing (log) price into attribute contributions.
 
@@ -94,9 +82,7 @@ def hedonic_price_model(df: pd.DataFrame) -> RegressionSummary:
     return _summarise("Hedonic price model", formula, result)
 
 
-# --------------------------------------------------------------------------- #
 # 2. Demand model (with external macro drivers if present)
-# --------------------------------------------------------------------------- #
 def demand_model(df: pd.DataFrame) -> RegressionSummary:
     """OLS of sales volume on price and (when available) macro drivers.
 
@@ -114,9 +100,7 @@ def demand_model(df: pd.DataFrame) -> RegressionSummary:
     return _summarise("Demand model", formula, result)
 
 
-# --------------------------------------------------------------------------- #
 # 3. Price elasticity of demand (log-log)
-# --------------------------------------------------------------------------- #
 @dataclass
 class ElasticityResult:
     """Point estimate and CI for the price elasticity of demand."""
@@ -136,7 +120,7 @@ class ElasticityResult:
     def interpretation(self) -> str:
         if not self.is_significant:
             return (
-                "Not statistically distinguishable from zero — no measurable price "
+                "Not statistically distinguishable from zero - no measurable price "
                 "sensitivity in this dataset (consistent with a signal-free DGP)."
             )
         sign = "elastic" if abs(self.elasticity) > 1 else "inelastic"
@@ -165,9 +149,7 @@ def price_elasticity(df: pd.DataFrame) -> ElasticityResult:
     )
 
 
-# --------------------------------------------------------------------------- #
 # 4. Multicollinearity diagnostic (VIF)
-# --------------------------------------------------------------------------- #
 def vif_table(df: pd.DataFrame, columns: Optional[list[str]] = None) -> pd.DataFrame:
     """Variance Inflation Factors for the numeric regressors.
 
@@ -193,9 +175,7 @@ def vif_table(df: pd.DataFrame, columns: Optional[list[str]] = None) -> pd.DataF
     return pd.DataFrame(rows)
 
 
-# --------------------------------------------------------------------------- #
 # 5. Target-leakage proof
-# --------------------------------------------------------------------------- #
 @dataclass
 class LeakageProof:
     """Evidence that the classification label is a deterministic threshold."""

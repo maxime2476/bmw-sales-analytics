@@ -1,7 +1,5 @@
-# Normalise line endings: treat as text, checkout native, commit LF.
 * text=auto eol=lf
 
-# Explicit binaries (never normalise).
 *.png binary
 *.jpg binary
 *.pt binary
@@ -10,5 +8,4 @@
 *.cbm binary
 *.parquet binary
 
-# Keep CSV as text but do not let editors mangle it.
 *.csv text eol=lf

@@ -91,6 +91,6 @@ def get_regression_model(_sample: int = 12000) -> tuple[TrainedModel, Dataset]:
             cols = set(loaded.named_steps["pre"].feature_names_in_)
             if cols == expected:  # only swap in when the schema matches
                 model.pipeline = loaded
-        except Exception:  # noqa: BLE001 — fall back to the freshly trained pipeline
+        except Exception:  # noqa: BLE001 - fall back to the freshly trained pipeline
             pass
     return model, ds

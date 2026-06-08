@@ -98,7 +98,7 @@ def make_dataset(
         ``"regression"`` (target ``Sales_Volume``) or ``"classification"``
         (target ``Sales_Classification``).
     include_leakage:
-        Classification only — include ``Sales_Volume`` to demonstrate leakage.
+        Classification only - include ``Sales_Volume`` to demonstrate leakage.
     """
     seed = get_settings().random_seed
     data = add_engineered_features(df)

@@ -1,6 +1,6 @@
-# Conformal Prediction — calibrated, honest uncertainty
+# Conformal Prediction - calibrated, honest uncertainty
 
-*Generated: 2026-06-06 · Author: Maxime GOURGUECHON*
+*Generated: 2026-06-08 · Author: Maxime GOURGUECHON*
 
 > Split-conformal intervals targeting **90% coverage**. Reproduce with `make conformal`.
 
@@ -11,8 +11,8 @@
 
 ## Reading this
 
-- Both targets achieve **≈ 90% coverage** — the conformal guarantee holds regardless of model quality.
+- Both targets achieve **≈ 90% coverage** - the conformal guarantee holds regardless of model quality.
 - On the **real** data the interval spans **95%** of the target range: the model honestly says *'I don't know'* (there is no signal to narrow it).
-- On **signal-bearing** data the interval collapses to **22%** of the range — calibrated, *useful* uncertainty.
+- On **signal-bearing** data the interval collapses to **22%** of the range - calibrated, *useful* uncertainty.
 
-The interval **width** is thus a principled measure of how much the data actually permits you to say — the perfect complement to the project's honest-analytics thesis (see the Signal Audit and Predictive Capability).
+The interval **width** is thus a principled measure of how much the data actually permits you to say - the perfect complement to the project's honest-analytics thesis (see the Signal Audit and Predictive Capability).

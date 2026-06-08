@@ -1,18 +1,10 @@
-"""Foundation for hybrid (real + mock) external API clients.
+"""Base class for the external API clients.
 
-Design goals
-------------
-- **Offline-safe & reproducible.** Every client can produce a deterministic
-  *mock* response, so the project (and CI) runs with no network and no API keys.
-- **Resilient.** Live calls are wrapped in retry-with-backoff (``tenacity``).
-  Repeated failures trip a per-client *circuit breaker* that falls back to mock
-  data instead of cascading errors into the pipeline.
-- **Cached.** Successful responses are persisted to disk (parquet) keyed by the
-  request parameters, so repeated runs are fast and stable.
-- **Transparent.** Each result records its provenance (``live`` / ``cache`` /
-  ``mock``) so the UI can honestly show where a number came from.
-
-Subclasses implement just two methods: :meth:`_fetch_live` and :meth:`_mock`.
+Each client either hits a real endpoint or returns a deterministic mock, so the
+project runs offline with no keys. Live calls retry with backoff (tenacity), and
+after a failure a per-client circuit breaker falls back to the mock. Successful
+responses are cached to parquet, and every result carries its provenance
+(live / cache / mock). Subclasses implement ``_fetch_live`` and ``_mock``.
 """
 
 from __future__ import annotations
@@ -69,9 +61,7 @@ class BaseAPIClient(ABC):
         self._cache_dir = Path(self.settings.cache_dir) / self.name
         self._circuit_open = False  # once True, skip live calls for this instance
 
-    # ------------------------------------------------------------------ #
     # Public API
-    # ------------------------------------------------------------------ #
     def fetch(self, **params: Any) -> APIResult:
         """Return data for ``params``, preferring cache → live → mock.
 
@@ -91,13 +81,11 @@ class BaseAPIClient(ABC):
             data = self._fetch_live(**params)
             self._write_cache(cache_path, data)
             return APIResult(data, DataSource.LIVE, self.name)
-        except Exception:  # noqa: BLE001 — any failure must fall back, not crash
+        except Exception:  # noqa: BLE001 - any failure must fall back, not crash
             self._circuit_open = True
             return APIResult(self._mock(**params), DataSource.MOCK, self.name)
 
-    # ------------------------------------------------------------------ #
     # To implement in subclasses
-    # ------------------------------------------------------------------ #
     @abstractmethod
     def _fetch_live(self, **params: Any) -> pd.DataFrame:
         """Fetch real data from the upstream API. May raise on failure."""
@@ -106,9 +94,7 @@ class BaseAPIClient(ABC):
     def _mock(self, **params: Any) -> pd.DataFrame:
         """Return a deterministic, plausible mock for the same parameters."""
 
-    # ------------------------------------------------------------------ #
     # Shared HTTP helper (retry + timeout)
-    # ------------------------------------------------------------------ #
     def _http_get_json(self, url: str, params: Optional[dict[str, Any]] = None) -> Any:
         """GET ``url`` and return parsed JSON, with retry/backoff and timeout."""
 
@@ -146,9 +132,7 @@ class BaseAPIClient(ABC):
             if obs.get("value") is not None
         }
 
-    # ------------------------------------------------------------------ #
     # Cache plumbing
-    # ------------------------------------------------------------------ #
     def _cache_key(self, params: dict[str, Any]) -> str:
         payload = json.dumps(params, sort_keys=True, default=str)
         digest = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:16]
@@ -162,14 +146,14 @@ class BaseAPIClient(ABC):
             return None
         try:
             return pd.read_parquet(path)
-        except Exception:  # noqa: BLE001 — corrupt cache should not be fatal
+        except Exception:  # noqa: BLE001 - corrupt cache should not be fatal
             return None
 
     def _write_cache(self, path: Path, data: pd.DataFrame) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         try:
             data.to_parquet(path, index=False)
-        except Exception:  # noqa: BLE001 — caching is best-effort
+        except Exception:  # noqa: BLE001 - caching is best-effort
             pass
 
     @staticmethod

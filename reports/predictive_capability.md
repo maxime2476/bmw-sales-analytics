@@ -1,6 +1,6 @@
-# Predictive Capability — *can the pipeline predict when there IS signal?*
+# Predictive Capability - *can the pipeline predict when there IS signal?*
 
-*Generated: 2026-06-05 · Author: Maxime GOURGUECHON*
+*Generated: 2026-06-08 · Author: Maxime GOURGUECHON*
 
 > Counterpart to the [Signal Audit](signal_audit.md): the same production pipeline, run on a **clearly-labelled signal-bearing target**, validated honestly. Reproduce with `make capability`.
 
@@ -10,9 +10,9 @@
 |---|---|
 | **Cross-validated R²** (5-fold) | **0.849 ± 0.003** |
 | **Held-out test R²** | **0.854** |
-| Verdict | SKILFUL — predicts the known signal |
+| Verdict | SKILFUL - predicts the known signal |
 
-The CV and held-out scores agree (no overfitting), and the score is stable across folds (low σ) — this is a *validated* model, not a lucky split.
+The CV and held-out scores agree (no overfitting), and the score is stable across folds (low σ) - this is a *validated* model, not a lucky split.
 
 ## Learning curve (test R² vs training size)
 
@@ -24,9 +24,9 @@ The CV and held-out scores agree (no overfitting), and the score is stable acros
 | 4,339 | 0.843 |
 | 5,599 | 0.847 |
 
-Performance rises monotonically with data — the model genuinely learns.
+Performance rises monotonically with data - the model genuinely learns.
 
-## SHAP — the model recovers the TRUE drivers
+## SHAP - the model recovers the TRUE drivers
 
 The synthetic target was built from region, premium tier, engine size, price and electrification. SHAP ranks exactly those at the top:
 
@@ -41,4 +41,4 @@ The synthetic target was built from region, premium tier, engine size, price and
 
 ## The point
 
-On signal-bearing data the pipeline reaches **R² ≈ 0.85**; on the real BMW data it scores **≈ 0** (see [model_benchmark.md](model_benchmark.md)). The pipeline is sound and predictively competent — the null result is a property of the *data*, proven, not a failure of the modelling.
+On signal-bearing data the pipeline reaches **R² ≈ 0.85**; on the real BMW data it scores **≈ 0** (see [model_benchmark.md](model_benchmark.md)). The pipeline is sound and predictively competent - the null result is a property of the *data*, proven, not a failure of the modelling.

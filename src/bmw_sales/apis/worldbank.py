@@ -3,8 +3,8 @@
 The World Bank Indicators API is public and requires no key. We pull two
 indicators per region aggregate over the dataset horizon (2010–2024):
 
-- ``FP.CPI.TOTL.ZG`` — inflation, consumer prices (annual %).
-- ``NY.GDP.PCAP.CD`` — GDP per capita (current US$), a purchasing-power proxy.
+- ``FP.CPI.TOTL.ZG`` - inflation, consumer prices (annual %).
+- ``NY.GDP.PCAP.CD`` - GDP per capita (current US$), a purchasing-power proxy.
 
 These let us confront sales against regional macro conditions in the econometric
 and simulation layers.

@@ -1,26 +1,10 @@
-"""Split-conformal prediction intervals — honest, distribution-free uncertainty.
+"""Split-conformal prediction intervals.
 
-Conformal prediction wraps *any* model with **finite-sample, distribution-free**
-prediction intervals that achieve a guaranteed marginal coverage (≈ 1 − α),
-regardless of whether the model is any good.
-
-That guarantee is exactly what makes it the right tool for this project's thesis:
-
-- On the **real, signal-free** data the model cannot predict, so the conformal
-  intervals widen to span almost the entire target range — an honest *"I don't
-  know"* — while still achieving the promised coverage.
-- On **signal-bearing** data the same procedure yields **tight** intervals.
-
-The width therefore becomes a calibrated, honest measure of *how much the data
-actually lets you say*.
-
-Method (split / inductive conformal):
-1. Fit the model on a proper-training split.
-2. On a held-out **calibration** split, compute nonconformity scores
-   ``s_i = |y_i − ŷ_i|``.
-3. The interval half-width is the ``⌈(n+1)(1−α)⌉ / n`` empirical quantile of the
-   scores.
-4. Evaluate empirical coverage and width on the test split.
+Gives distribution-free intervals with ~(1-alpha) coverage regardless of model
+quality. Fit on a proper-train split, take the (1-alpha) quantile of the
+calibration-set absolute residuals as the half-width, then measure coverage and
+width on the test split. On the signal-free data the interval ends up covering
+most of the target range; on a signal-bearing target it is much tighter.
 """
 
 from __future__ import annotations
@@ -70,7 +54,7 @@ def conformal_intervals(
     ----------
     signal_bearing:
         If ``True``, replace the (signal-free) real target with the labelled
-        synthetic signal-bearing target — to contrast informative vs honest-wide
+        synthetic signal-bearing target - to contrast informative vs honest-wide
         intervals.
     alpha:
         Miscoverage level; intervals target ``1 − alpha`` coverage (e.g. 0.1 → 90%).
@@ -137,7 +121,7 @@ def build_report(real: ConformalResult, signal: ConformalResult) -> str:
 
     target = 1 - real.alpha
     return (
-        f"# Conformal Prediction — calibrated, honest uncertainty\n\n"
+        f"# Conformal Prediction - calibrated, honest uncertainty\n\n"
         f"*Generated: {date.today().isoformat()} · Author: Maxime GOURGUECHON*\n\n"
         f"> Split-conformal intervals targeting **{target:.0%} coverage**. Reproduce "
         f"with `make conformal`.\n\n"
@@ -146,16 +130,16 @@ def build_report(real: ConformalResult, signal: ConformalResult) -> str:
         f"{row('Real `Sales_Volume`', real)}\n"
         f"{row('Synthetic signal-bearing', signal)}\n\n"
         f"## Reading this\n\n"
-        f"- Both targets achieve **≈ {target:.0%} coverage** — the conformal "
+        f"- Both targets achieve **≈ {target:.0%} coverage** - the conformal "
         f"guarantee holds regardless of model quality.\n"
         f"- On the **real** data the interval spans **{real.relative_width:.0%}** of "
         f"the target range: the model honestly says *'I don't know'* (there is no "
         f"signal to narrow it).\n"
         f"- On **signal-bearing** data the interval collapses to "
-        f"**{signal.relative_width:.0%}** of the range — calibrated, *useful* "
+        f"**{signal.relative_width:.0%}** of the range - calibrated, *useful* "
         f"uncertainty.\n\n"
         f"The interval **width** is thus a principled measure of how much the data "
-        f"actually permits you to say — the perfect complement to the project's "
+        f"actually permits you to say - the perfect complement to the project's "
         f"honest-analytics thesis (see the Signal Audit and Predictive Capability).\n"
     )
 
@@ -173,7 +157,7 @@ def main() -> None:
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     out = REPORTS_DIR / "conformal_prediction.md"
     out.write_text(build_report(real, signal), encoding="utf-8")
-    print(f"[OK] Conformal report written to {out}")
+    print(f"Conformal report written to {out}")
     print(
         f"     real: {real.coverage:.0%} cov, {real.relative_width:.0%} width | "
         f"signal: {signal.coverage:.0%} cov, {signal.relative_width:.0%} width"

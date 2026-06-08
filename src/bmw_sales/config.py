@@ -13,9 +13,7 @@ from typing import Final
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# --------------------------------------------------------------------------- #
 # Filesystem layout (resolved relative to the repository root, not the CWD).
-# --------------------------------------------------------------------------- #
 PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[2]
 DATA_DIR: Final[Path] = PROJECT_ROOT / "data"
 RAW_DATA_DIR: Final[Path] = DATA_DIR / "raw"
@@ -29,7 +27,7 @@ RAW_DATASET_PATH: Final[Path] = RAW_DATA_DIR / "BMW_sales_data_(2010-2024).csv"
 
 
 class DatasetSchema:
-    """Canonical column names — referenced everywhere instead of string literals.
+    """Canonical column names - referenced everywhere instead of string literals.
 
     Keeping the schema in one place means a column rename is a one-line change
     and ``mypy`` / IDEs can catch typos that bare strings never would.

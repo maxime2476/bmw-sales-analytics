@@ -1,17 +1,11 @@
-"""Formal statistical tests for *whether a dataset contains learnable signal*.
+"""Statistical tests for whether a dataset has any learnable signal.
 
-These turn the project's central claim ("the data is signal-free noise") from an
-assertion into **falsifiable, transferable evidence**. The module is dataset-
-agnostic: point it at any frame and it will quantify how much exploitable signal
-exists, using three complementary lenses.
+Three checks, usable on any frame:
 
-1. **Permutation (label-shuffle) test** — the gold standard. Train a model on the
-   real labels, then on many label-shuffled copies, and compare the real held-out
-   score to the null distribution. A high p-value means the real score is
-   indistinguishable from chance: *no signal*.
-2. **Kolmogorov–Smirnov uniformity test** — for each numeric feature, test whether
-   it is drawn from a Uniform distribution (a fingerprint of synthetic data).
-3. **Chi-squared independence** — test pairwise independence of categoricals.
+- permutation (label-shuffle) test: compare the real held-out score to the
+  distribution of scores under shuffled labels; a high p-value means no signal;
+- Kolmogorov-Smirnov test of each numeric feature against a uniform fit;
+- chi-squared test of independence between categoricals.
 """
 
 from __future__ import annotations

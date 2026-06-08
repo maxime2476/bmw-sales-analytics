@@ -1,11 +1,8 @@
-"""Positive-control experiment: prove the pipeline works when signal exists.
+"""Positive control: run the same pipeline on a synthetic, signal-bearing target.
 
-A null R² could mean two things: (a) the data has no signal, or (b) the pipeline
-is broken. To rule out (b), we run the *identical* modelling pipeline on a
-**synthetic target engineered to be a known function of the features** (clearly
-labelled as such). If the pipeline recovers that signal (high R²) while scoring
-~0 on the real target, the conclusion is unambiguous: **the pipeline is sound;
-the real data is empty.**
+A null R2 on the real data could mean either no signal or a broken pipeline.
+Building a target that is a known function of the features and checking the
+pipeline recovers it (high R2) rules out the second case.
 """
 
 from __future__ import annotations
@@ -35,7 +32,7 @@ def make_signal_bearing_target(df: pd.DataFrame, *, noise_sd: float = 400.0) -> 
     """Construct a synthetic demand target that genuinely depends on the features.
 
     ``synthetic_demand = f(region, premium tier, engine, year, price, electrified)
-    + Gaussian noise``. This is **not** a claim about the real world — it exists
+    + Gaussian noise``. This is **not** a claim about the real world - it exists
     only to verify the pipeline can learn a relationship that is known to exist.
     """
     seed = get_settings().random_seed
@@ -74,7 +71,7 @@ class ControlResult:
     def verdict(self) -> str:
         return (
             f"Pipeline VALIDATED: it recovers a known signal (R²={self.r2_synthetic:.3f}) "
-            f"but scores ~0 on the real target (R²={self.r2_real:.3f}) — the null "
+            f"but scores ~0 on the real target (R²={self.r2_real:.3f}) - the null "
             f"result is a property of the data, not a modelling failure."
             if self.pipeline_validated
             else "Inconclusive: synthetic signal not recovered."

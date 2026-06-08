@@ -45,24 +45,24 @@ def build_report(df: pd.DataFrame) -> str:
     )
     unif_rows = "\n".join(
         f"| {u.feature} | {u.ks_statistic:.4f} | {u.p_value:.3f} | "
-        f"{'✓ uniform' if u.looks_uniform else 'not uniform'} |"
+        f"{'uniform' if u.looks_uniform else 'not uniform'} |"
         for u in unif
     )
 
     def perm_block(p: PermutationResult) -> str:
         return (
-            f"- **{p.task} ({p.metric})** — observed = **{p.observed:+.4f}**, "
+            f"- **{p.task} ({p.metric})** - observed = **{p.observed:+.4f}**, "
             f"null = {p.null_mean:+.4f} ± {p.null_std:.4f} over {p.n_permutations} "
             f"shuffles, **p = {p.p_value:.3f}** → "
             f"{'SIGNAL' if p.has_signal else 'NO SIGNAL (indistinguishable from chance)'}"
         )
 
     return (
-        f"# Signal Audit — is there anything to learn?\n\n"
+        f"# Signal Audit - is there anything to learn?\n\n"
         f"*Generated: {date.today().isoformat()} · Author: Maxime GOURGUECHON*\n\n"
         f"> A dataset-agnostic, falsifiable audit. Reproduce with "
         f"`python -m bmw_sales.audit.report`.\n\n"
-        f"## 1. Positive control — *does the pipeline even work?*\n\n"
+        f"## 1. Positive control - *does the pipeline even work?*\n\n"
         f"We run the **identical** pipeline on a synthetic target engineered to be a "
         f"known function of the features.\n\n"
         f"| Target | Held-out R² ({control.model}) |\n|---|---|\n"
@@ -84,7 +84,7 @@ def build_report(df: pd.DataFrame) -> str:
         f"The permutation test shows the real targets are **indistinguishable from "
         f"shuffled labels**, and the KS tests are consistent with **uniformly "
         f"generated** features. Together these are decisive, transferable evidence "
-        f"that the dataset is synthetic noise — see ADR-0002.\n"
+        f"that the dataset is synthetic noise - see ADR-0002.\n"
     )
 
 
@@ -94,7 +94,7 @@ def main() -> None:
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     out = REPORTS_DIR / "signal_audit.md"
     out.write_text(build_report(load_raw()), encoding="utf-8")
-    print(f"[OK] Signal audit written to {out}")
+    print(f"Signal audit written to {out}")
 
 
 if __name__ == "__main__":

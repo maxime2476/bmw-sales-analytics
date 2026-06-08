@@ -1,42 +1,14 @@
-"""Scenario Simulator — forward-looking demand decision-support.
+"""What-if demand simulator (not a fit to the historical data).
 
-⚠️ **This is an explicit what-if simulation, not a fit to the historical data.**
-The source dataset carries no predictive signal (ADR-0002), so we cannot forecast
-demand from it. Instead, this module projects demand under user-chosen scenarios
-using a transparent constant-elasticity model whose parameters come from the
-**automotive-economics literature** (cited below) and whose baselines come from
-the **real external macro APIs**. Every assumption is visible and adjustable.
+Projects demand under a constant-elasticity model:
 
-Model
------
-Projected demand is the baseline volume scaled by independent multiplicative
-factors (a standard log-linear / constant-elasticity demand specification):
+    Q' = Q0 * (1+dp)^ep * (1+dy)^ey * (1+df)^ef * R(ds) * (1+dfx)^ep
 
-    Q' = Q0 · (1+Δp)^εp · (1+Δy)^εy · (1+Δf)^εf · R(Δs) · (1+Δfx)^εp
-
-where Δp = list-price change, Δy = income (GDP/cap) growth, Δf = fuel-price
-change, Δs = regulation-stringency change, Δfx = local-currency depreciation
-(passed through to effective price via the own-price elasticity).
-
-Elasticity priors — **segment-specific** (automotive-demand & luxury-goods lit.)
---------------------------------------------------------------------------------
-Generic car elasticities understate the luxury segment, so we differentiate
-**premium / performance** tiers (7 Series, M5, M3, i8, X5/X6) from **standard**:
-
-- **Own-price elasticity εp.** Mass-market autos sit near εp ≈ -1.0, but luxury
-  buyers are far less price-sensitive — and **Veblen effects** (status/positional
-  consumption) push εp toward 0 at the top. Premium prior **≈ -0.3**, standard
-  **≈ -0.7**.
-- **Income elasticity εy.** Luxury cars are superior/positional goods (εy ≫ 1).
-  Premium prior **≈ 2.2**, standard **≈ 1.3**.
-- **Fuel-price cross-elasticity εf ≈ -0.15** (combustion) / small positive
-  (electrified substitution) — weaker for premium buyers (fuel cost is a tiny
-  share of TCO at this price point).
-- **Regulation response.** Tighter CO₂ rules shift demand toward electrified
-  models; modelled as ±r per +10 stringency pts.
-
-All priors are explicit, segment-selectable and user-overridable in the UI; the
-simulator remains a labelled what-if tool, not a fit to the data.
+for changes in list price (dp), income (dy), fuel price (df), CO2-regulation
+stringency (ds) and FX (dfx). Elasticity priors are segment-specific: the premium
+tier is less price-elastic (own-price ~-0.3, with Veblen effects) and more
+income-elastic (~2.2) than the standard tier (~-0.7 / ~1.3). Baselines come from
+the macro APIs; all priors are adjustable in the UI.
 """
 
 from __future__ import annotations
@@ -181,7 +153,7 @@ def macro_defaults(region: str, *, year: int = 2024) -> dict[str, float]:
     """Suggest scenario defaults from the (real/mock) external APIs for a region.
 
     Returns plausible starting values: recent inflation, a GDP-growth proxy, and
-    the latest regulation-stringency level — so the UI opens on realistic numbers.
+    the latest regulation-stringency level - so the UI opens on realistic numbers.
     """
     wb = WorldBankClient().fetch(region=region, start_year=year - 2, end_year=year).data
     co2 = CO2RegulationClient().fetch(region=region, start_year=year, end_year=year).data

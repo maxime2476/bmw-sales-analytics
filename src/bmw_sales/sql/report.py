@@ -30,7 +30,7 @@ def build_report() -> str:
         blocks.append(f"## {title}\n\n`{name}.sql`\n\n{df.to_markdown(index=False)}\n")
     body = "\n".join(blocks)
     return (
-        f"# SQL Business Insights — BMW Sales\n\n"
+        f"# SQL Business Insights - BMW Sales\n\n"
         f"*Generated: {date.today().isoformat()} · Author: Maxime GOURGUECHON*\n\n"
         f"> Decision-oriented analytics run with **DuckDB** directly over the raw "
         f"CSV (no ETL). Queries live in `sql/queries/`. Reproduce with `make sql`.\n\n"
@@ -46,7 +46,7 @@ def main() -> None:
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     out = REPORTS_DIR / "sql_insights.md"
     out.write_text(build_report(), encoding="utf-8")
-    print(f"[OK] SQL insights written to {out}")
+    print(f"SQL insights written to {out}")
 
 
 if __name__ == "__main__":

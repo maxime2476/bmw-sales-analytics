@@ -1,6 +1,6 @@
-# Econometric Analysis — BMW Sales (2010–2024)
+# Econometric Analysis - BMW Sales (2010–2024)
 
-*Generated: 2026-06-03 · Author: Maxime GOURGUECHON*
+*Generated: 2026-06-08 · Author: Maxime GOURGUECHON*
 
 > Inference-focused models with HC3 robust standard errors. Read alongside the [Data Integrity Report](data_integrity_report.md).
 
@@ -11,7 +11,7 @@ We estimate a hedonic price model, a demand model augmented with real macro driv
 ## 1. Price elasticity of demand
 
 - **Elasticity (∂log Q / ∂log P)** = -0.0010 (95% CI [-0.021, +0.019], p = 0.923, N = 50,000)
-- **Interpretation:** Not statistically distinguishable from zero — no measurable price sensitivity in this dataset (consistent with a signal-free DGP).
+- **Interpretation:** Not statistically distinguishable from zero - no measurable price sensitivity in this dataset (consistent with a signal-free DGP).
 
 ## 2. Regression models
 

@@ -53,7 +53,7 @@ def build_report(df: pd.DataFrame) -> str:
     leakage = prove_leakage(df)
 
     return (
-        f"# Econometric Analysis — BMW Sales (2010–2024)\n\n"
+        f"# Econometric Analysis - BMW Sales (2010–2024)\n\n"
         f"*Generated: {date.today().isoformat()} · Author: Maxime GOURGUECHON*\n\n"
         f"> Inference-focused models with HC3 robust standard errors. Read "
         f"alongside the [Data Integrity Report](data_integrity_report.md).\n\n"
@@ -106,7 +106,7 @@ def main() -> None:
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     out_path = REPORTS_DIR / "econometric_analysis.md"
     out_path.write_text(build_report(enriched.data), encoding="utf-8")
-    print(f"[OK] Econometric report written to {out_path}")
+    print(f"Econometric report written to {out_path}")
     print(f"     External data provenance -> {summarise_provenance(enriched.provenance)}")
 
 

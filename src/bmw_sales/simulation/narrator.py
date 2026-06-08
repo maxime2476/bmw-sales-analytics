@@ -1,13 +1,8 @@
-"""Plain-English narrator for a simulated scenario (optional LLM + offline fallback).
+"""Turn a ScenarioResult into a short plain-English summary.
 
-Turns a :class:`ScenarioResult` into a concise, executive-ready narrative. If the
-**Anthropic Claude** SDK and an ``ANTHROPIC_API_KEY`` are available, it asks Claude
-for polished prose; otherwise it falls back to a **deterministic, template-based**
-narrative so the feature works everywhere — offline, in CI and on the deployed app
-— with no key required.
-
-The narrative is grounded in the *computed numbers* (it never invents figures),
-keeping it consistent with the project's honesty principle.
+Uses the Anthropic Claude SDK when ANTHROPIC_API_KEY is set, otherwise a
+template-based fallback so it works offline and in CI. Either way the text only
+uses the numbers it is given.
 """
 
 from __future__ import annotations
@@ -75,14 +70,14 @@ def _template_narrative(
         lo, hi = dist.pct_change_ci()
         ci_txt = (
             f" Accounting for elasticity uncertainty, the 80% credible interval is "
-            f"**[{lo:+.0f}%, {hi:+.0f}%]** — the planning range to budget against."
+            f"**[{lo:+.0f}%, {hi:+.0f}%]** - the planning range to budget against."
         )
     return (
         f"In **{scenario.region}**, demand for **{scenario.fuel_type}** BMWs is "
         f"projected to **{direction}** by **{result.total_change_pct:+.1f}%** under "
         f"this scenario ({result.base_volume:,.0f} → {result.projected_volume:,.0f} "
         f"units).{driver_txt}{ci_txt} *This is a labelled what-if simulation grounded "
-        f"in literature elasticities and real macro data — not a forecast from the "
+        f"in literature elasticities and real macro data - not a forecast from the "
         f"historical dataset.*"
     )
 
@@ -111,6 +106,6 @@ def narrate(
                 messages=[{"role": "user", "content": facts}],
             )
             return msg.content[0].text.strip()
-        except Exception:  # noqa: BLE001 — any failure falls back to the template
+        except Exception:  # noqa: BLE001 - any failure falls back to the template
             pass
     return _template_narrative(scenario, result, dist)

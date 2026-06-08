@@ -1,14 +1,8 @@
-"""CO2 environmental-context client (real World Bank emissions + curated proxy).
+"""CO2 context per region and year.
 
-Provides, per region and year:
-
-- ``co2_emissions_pc`` — **real** World Bank CO2 emissions per capita
-  (``EN.ATM.CO2E.PC``), the genuine environmental signal driving the
-  Petrol→Electric transition (live path; mock fallback);
-- ``regulation_stringency_index`` (0–100) and ``fleet_co2_target_g_km`` — a
-  **curated, clearly-labelled proxy** for regulatory pressure (no single free API
-  publishes historical regulation stringency), on a defensible schedule where
-  Europe leads and the Middle East trails.
+Returns real World Bank CO2 emissions per capita (live, with a mock fallback)
+plus a curated regulation-stringency index and fleet CO2 target. The regulation
+figures are a labelled proxy since no free API publishes that series.
 """
 
 from __future__ import annotations
